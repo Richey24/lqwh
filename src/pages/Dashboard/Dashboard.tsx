@@ -34,15 +34,20 @@ export const Dashboard = (props: any) => {
                                         <ol className="breadcrumb">
                                              <li className="breadcrumb-item">
                                                   <a href="#">Storage Area</a>
-                                                  <br />
-                                                  <button className="btn btn-primary" onClick={() => forceUpdate()}>Refresh</button>
                                              </li>
                                         </ol>
+                                       
                                    </nav>
+                                  
                               </div>
-
+                              <div className="row">
+                                <div className="col-md-11">
+                                </div>
+                                <div className="col-md-1 ">
+                                      <button className="btn pull-right float-right btn-success" onClick={() => forceUpdate()}>Refresh</button>
+                                </div>
+                              </div>
                               
-
                               <div className="row">
                                    <div className="col-md-12">
                                         <div className="simple-pill">
