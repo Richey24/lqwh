@@ -1,4 +1,20 @@
 import { TankProps } from "./types";
+import { faker } from '@faker-js/faker';
+ 
+interface Tank {
+    tankValue: any
+}
+
+
+function createRandomTankValue(): Tank {
+     return {
+       tankValue: faker.number.int({ min: 1, max: 100 }),
+     };
+}
+   
+const Tank = createRandomTankValue();
+
+console.log( faker.number.int({ min: 1, max: 100 }))
 
 export const tanks: TankProps[] = [
      {
@@ -7,7 +23,7 @@ export const tanks: TankProps[] = [
           clName: "tank1",
           title: "Line 1",
           backFontColor: "#fe7968",
-          fillValue: 50,
+          fillValue: faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -16,7 +32,7 @@ export const tanks: TankProps[] = [
           clName: "tank2",
           title: "Line 2",
           backFontColor: "#fe7968",
-          fillValue: 60,
+          fillValue: faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -25,7 +41,7 @@ export const tanks: TankProps[] = [
           clName: "tank3",
           title: "Line 3",
           backFontColor: "#fe7968",
-          fillValue: 90,
+          fillValue: faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -34,7 +50,7 @@ export const tanks: TankProps[] = [
           clName: "tank4",
           title: "Line 4",
           backFontColor: "#fe7968",
-          fillValue: 30,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -43,7 +59,7 @@ export const tanks: TankProps[] = [
           clName: "tank5",
           title: "Line 5",
           backFontColor: "#fe7968",
-          fillValue: 10,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -52,7 +68,7 @@ export const tanks: TankProps[] = [
           clName: "tank6",
           title: "Line 6",
           backFontColor: "#fe7968",
-          fillValue: 50,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -61,7 +77,7 @@ export const tanks: TankProps[] = [
           clName: "tank7",
           title: "Line 7",
           backFontColor: "#fe7968",
-          fillValue: 40,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -70,7 +86,7 @@ export const tanks: TankProps[] = [
           clName: "tank8",
           title: "Line 8",
           backFontColor: "#fe7968",
-          fillValue: 80,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -79,7 +95,7 @@ export const tanks: TankProps[] = [
           clName: "tank9",
           title: "Line 9",
           backFontColor: "#fe7968",
-          fillValue: 70,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -88,7 +104,7 @@ export const tanks: TankProps[] = [
           clName: "tank10",
           title: "Line 10",
           backFontColor: "#fe7968",
-          fillValue: 20,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -97,7 +113,7 @@ export const tanks: TankProps[] = [
           clName: "tank11",
           title: "Line 11",
           backFontColor: "#fe7968",
-          fillValue: 50,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -106,7 +122,7 @@ export const tanks: TankProps[] = [
           clName: "tank12",
           title: "Line 12",
           backFontColor: "#fe7968",
-          fillValue: 45,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "normal",
      },
      {
@@ -115,7 +131,7 @@ export const tanks: TankProps[] = [
           clName: "tank20",
           title: "T11",
           backFontColor: "#fe7968",
-          fillValue: 70,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "premix",
           temperature: 55,
           minimumTemperature: 60,
@@ -128,7 +144,7 @@ export const tanks: TankProps[] = [
           clName: "tank21",
           title: "T11",
           backFontColor: "#fe7968",
-          fillValue: 90,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "premix",
           temperature: 30,
           minimumTemperature: 5,
@@ -141,7 +157,7 @@ export const tanks: TankProps[] = [
           clName: "tank23",
           title: "T11",
           backFontColor: "#fe7968",
-          fillValue: 10,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "premix",
           temperature: 15,
           minimumTemperature: 10,
@@ -154,7 +170,7 @@ export const tanks: TankProps[] = [
           clName: "tank24",
           title: "T11",
           backFontColor: "#fe7968",
-          fillValue: 30,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "mix",
           temperature: 45,
           minimumTemperature: 10,
@@ -167,7 +183,7 @@ export const tanks: TankProps[] = [
           clName: "tank25",
           title: "T11",
           backFontColor: "#fe7968",
-          fillValue: 66,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "mix",
           temperature: 13,
           minimumTemperature: 10,
@@ -180,7 +196,7 @@ export const tanks: TankProps[] = [
           clName: "tank26",
           title: "T11",
           backFontColor: "#fe7968",
-          fillValue: 81,
+          fillValue:  faker.number.int({ min: 1, max: 100 }),
           type: "mix",
           temperature: 22,
           minimumTemperature: 10,

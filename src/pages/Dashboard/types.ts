@@ -4,7 +4,7 @@ export interface TankProps {
      clName: string;
      title: string;
      backFontColor: string;
-     fillValue: number;
+     fillValue: any;
      type?: string;
      temperature?: number;
      minimumTemperature?: number;
