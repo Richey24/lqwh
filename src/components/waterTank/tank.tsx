@@ -34,7 +34,7 @@ const Tank: FC<TankProps> = ({
                          const defaults = {
                               tankType: "tower", // available types: 'tower', 'round'
                               tankWidth: null, // outside width.
-                              tankHeight: 1000, // outside height.
+                              tankHeight: 100, // outside height.
                               fillPadding: null, // gap between perimeter and inside tank area that displays water.
                               borderWidth: 2, // perimeter width.
                               borderColor: "#", // outside border color. usually the perimeter of the tank

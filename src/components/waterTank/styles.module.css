@@ -1,7 +1,7 @@
 .root {
-     width: 300px;
+     width: 200px;
      flex: 1;
-     min-width: 300px;
+     min-width: 200px;
      border: 2px solid #fff;
      border-radius: 8px;
      padding: 16px 8px;

@@ -82,10 +82,10 @@ export const Dashboard = (props: any) => {
                                              ))}
                                    </div>
                               ) : (
-                                   <div className="row layout-top-spacing gy-4">
+                                   <div className="col layout-top-spacing gy-6">
                                         <div
                                              className={classes.containerRoot}
-                                             style={{ width: "70%" }}
+                                             style={{ width: "50%" }}
                                         >
                                              {tankss
                                                   .filter((tank) => tank?.type === "premix")
@@ -95,7 +95,7 @@ export const Dashboard = (props: any) => {
                                         </div>
                                         <div
                                              className={classes.containerRoot}
-                                             style={{ width: "70%" }}
+                                             style={{ width: "50%" }}
                                         >
                                              {tankss
                                                   .filter((tank) => tank?.type === "mix")
