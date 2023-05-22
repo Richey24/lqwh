@@ -3,10 +3,10 @@ import { Route , Routes } from 'react-router-dom';
 import { DefaultLayout } from "./layouts/default";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 
+//@ts-ignore
 import $ from "jquery"; 
+//@ts-ignore
 window.$ = window.jQuery = $;
-
-import { router } from "./routes";
 
 
 function App() {
