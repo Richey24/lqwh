@@ -13,6 +13,7 @@ const Tank: FC<TankProps> = ({
      clName,
      type,
      title,
+     threshold,
      temperature,
      temperatureColor,
      temperatureMsm,
@@ -24,140 +25,143 @@ const Tank: FC<TankProps> = ({
           console.clear();
 
           (function ($) {
-               $.fn.analogTank = function (config: any) {
+               
+                $.fn.analogTank = function (config: any) {
                     let $this = $(this);
                     return new AnalogTank($this, config);
-               };
+                };
 
                class AnalogTank {
-                    constructor($this: any, config: any) {
-                         const defaults = {
-                              tankType: "tower", // available types: 'tower', 'round'
-                              tankWidth: null, // outside width.
-                              tankHeight: 100, // outside height.
-                              fillPadding: null, // gap between perimeter and inside tank area that displays water.
-                              borderWidth: 2, // perimeter width.
-                              borderColor: "#", // outside border color. usually the perimeter of the tank
-                              defaultFillColor: isTemperatureLow() ? temperatureColor : color, // default water color. this is assigned to fillColor if water level does not pass any thresholds.
-                              fillColor: null, // used later to set water color. it could be different color depending on situations.
-                              backFillColor: "#fafafa", // background color inside the tank where there is no water.
-                              backFillOpacity: 1, // opacity of the background.
-                              innerCornerRadius: 3,
-                              borderCornerRadius: 5,
-                              innerWidth: null,
-                              innerHeight: 100,
-                              neckWidth: 50, // only applies to round tank
-                              neckHeight: 50, // only applies to round tank
-                              fillAnimationColor: null, // used later to set the color while animating.
-                              fillMaxValue: fillMaxValue, // maximum possible value for the main text.
-                              fillMinValue: 0, // minimum possible value for the main text.
-                              fillValue: null, // value used to display the main text.
-                              fillUnit: null, // unit that is appended to the main text.
-                              decimal: 1, // number of decimal places for the main text.
-                              overlayTextFillOpacity: 0.8, // opacity of the main text.
-                              arrow: true, // arrow that is displayed to the right of the main text.
-                              fontFamily: "Helvetica",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              backFontColor: backFontColor,
-                              backFontAnimationColor: null,
-                              frontFontColor: null,
-                              waveWidth: 100,
-                              amplitude: 3,
-                              horizontalWaveDuration: 2000,
-                              transitionDuration: 1000,
-                              delay: 0,
-                              ease: (d3 as any)?.easePolyInOut.exponent(4),
-                              marker: true,
-                              markerPosition: "in",
-                              markerGap: [5, 3],
-                              markerLabelXOffset: 0,
-                              markerLabelYOffset: 0,
-                              markerWidth: 2,
-                              markerLength: 10,
-                              topMarkerText: null,
-                              topMarkerColor: "#133440",
-                              topMarkerFontColor: "#133440",
-                              bottomMarkerText: null,
-                              bottomMarkerColor: "#133440",
-                              bottomMarkerFontColor: "#133440",
-                              markerFontSize: 10,
-                              markerFontWeight: "bold",
-                              markerFontFamily: "Helvetica",
-                              enableSupportLabel: true,
-                              supportLabelFontColor: "#133440",
-                              supportLabelFontFamily: "Helvetica",
-                              supportLabelFontWeight: "bold",
-                              supportLabelFontSize: 14,
-                              supportLabelText: "NA",
-                              supportLabelYOffset: -1,
-                              mergeSupportLabelToBorder: false,
-                              dualSupportLabel: false,
-                              topSupportLabelFontColor: "#133440",
-                              topSupportLabelFontFamily: "Helvetica",
-                              topSupportLabelFontWeight: "bold",
-                              topSupportLabelFontSize: 14,
-                              topSupportLabelText: "NA",
-                              topSupportLabelYOffset: -1,
-                              enableSupportLabelBg: true,
-                              supportLabelBackgroundColor: "#fff",
-                              supportLabelBackgroundOpacity: 0.7,
-                              supportLabelBackgroundHeight: null,
-                              supportLabelBackgroundWidth: null,
-                              supportLabelBackgroundBorderWidth: 1,
-                              supportLabelBackgroundBorderColor: null,
-                              supportLabelPadding: 0,
-                              supportLabelWidthFix: 0,
-                              arrowName: null,
-                              upArrowName: "\uf176",
-                              downArrowName: "\uf175",
-                              noArrowName: "\uf07e",
-                              arrowFontFamily: "FontAwesome",
-                              arrowFontWeight: "bold",
-                              arrowFontSize: 12,
-                              arrowXOffset: 3,
-                              arrowYOffset: -1,
-                              topFillBackArrowColor: null,
-                              bottomFillBackArrowColor: null,
-                              frontArrowColor: null,
-                              backArrowColor: null,
-                              markerBarXOffset: 3,
-                              tooltipFontSize: 10,
-                              thresholds: [],
-                              lookupTableValue: null, // if lookup table value is set, a secondary text is displayed under the main text.
-                              lookupTableValueUnit: null, // unit for lookupTableValue.
-                              lookupTableValueDecimal: 0, // number of decimal places for lookup table value.
-                              lookupTableValueEnabled: false,
-                              lookupTableValueFontSize: 14,
-                              lookupTableValueYOffset: 2,
-                              changeRateValueArrowEnabled: false,
-                              changeRateValueArrowYOffset: 0,
-                              changeRateValue: null,
-                              changeRateValueDecimal: 0,
-                              changeRateValueEnabled: false,
-                              changeRateValueFontSize: 14,
-                              changeRateValueYOffset: 2,
-                              changeRateValueUnit: "kg",
-                         };
-                         Object.assign(defaults, config);
+                    
+                constructor($this: any, config: any) {
+                   
+                    const defaults = {
+                        tankType: "tower", // available types: 'tower', 'round'
+                        tankWidth: null, // outside width.
+                        tankHeight: 100, // outside height.
+                        fillPadding: null, // gap between perimeter and inside tank area that displays water.
+                        borderWidth: 2, // perimeter width.
+                        borderColor: "#", // outside border color. usually the perimeter of the tank
+                        defaultFillColor: isTemperatureLow() ? temperatureColor : color, // default water color. this is assigned to fillColor if water level does not pass any thresholds.
+                        fillColor: null, // used later to set water color. it could be different color depending on situations.
+                        backFillColor: "#fafafa", // background color inside the tank where there is no water.
+                        backFillOpacity: 1, // opacity of the background.
+                        innerCornerRadius: 3,
+                        borderCornerRadius: 5,
+                        innerWidth: null,
+                        innerHeight: 100,
+                        neckWidth: 50, // only applies to round tank
+                        neckHeight: 50, // only applies to round tank
+                        fillAnimationColor: null, // used later to set the color while animating.
+                        fillMaxValue: fillMaxValue, // maximum possible value for the main text.
+                        fillMinValue: 0, // minimum possible value for the main text.
+                        fillValue: null, // value used to display the main text.
+                        fillUnit: null, // unit that is appended to the main text.
+                        decimal: 1, // number of decimal places for the main text.
+                        overlayTextFillOpacity: 0.8, // opacity of the main text.
+                        arrow: true, // arrow that is displayed to the right of the main text.
+                        fontFamily: "Helvetica",
+                        fontWeight: "bold",
+                        fontSize: 20,
+                        backFontColor: backFontColor,
+                        backFontAnimationColor: null,
+                        frontFontColor: null,
+                        waveWidth: 100,
+                        amplitude: 3,
+                        horizontalWaveDuration: 2000,
+                        transitionDuration: 1000,
+                        delay: 0,
+                        ease: (d3 as any)?.easePolyInOut.exponent(4),
+                        marker: true,
+                        markerPosition: "in",
+                        markerGap: [5, 3],
+                        markerLabelXOffset: 0,
+                        markerLabelYOffset: 0,
+                        markerWidth: 2,
+                        markerLength: 10,
+                        topMarkerText: null,
+                        topMarkerColor: "#133440",
+                        topMarkerFontColor: "#133440",
+                        bottomMarkerText: null,
+                        bottomMarkerColor: "#133440",
+                        bottomMarkerFontColor: "#133440",
+                        markerFontSize: 10,
+                        markerFontWeight: "bold",
+                        markerFontFamily: "Helvetica",
+                        enableSupportLabel: true,
+                        supportLabelFontColor: "#133440",
+                        supportLabelFontFamily: "Helvetica",
+                        supportLabelFontWeight: "bold",
+                        supportLabelFontSize: 14,
+                        supportLabelText: "NA",
+                        supportLabelYOffset: -1,
+                        mergeSupportLabelToBorder: false,
+                        dualSupportLabel: false,
+                        topSupportLabelFontColor: "#133440",
+                        topSupportLabelFontFamily: "Helvetica",
+                        topSupportLabelFontWeight: "bold",
+                        topSupportLabelFontSize: 14,
+                        topSupportLabelText: "NA",
+                        topSupportLabelYOffset: -1,
+                        enableSupportLabelBg: true,
+                        supportLabelBackgroundColor: "#fff",
+                        supportLabelBackgroundOpacity: 0.7,
+                        supportLabelBackgroundHeight: null,
+                        supportLabelBackgroundWidth: null,
+                        supportLabelBackgroundBorderWidth: 1,
+                        supportLabelBackgroundBorderColor: null,
+                        supportLabelPadding: 0,
+                        supportLabelWidthFix: 0,
+                        arrowName: null,
+                        upArrowName: "\uf176",
+                        downArrowName: "\uf175",
+                        noArrowName: "\uf07e",
+                        arrowFontFamily: "FontAwesome",
+                        arrowFontWeight: "bold",
+                        arrowFontSize: 12,
+                        arrowXOffset: 3,
+                        arrowYOffset: -1,
+                        topFillBackArrowColor: null,
+                        bottomFillBackArrowColor: null,
+                        frontArrowColor: null,
+                        backArrowColor: null,
+                        markerBarXOffset: 3,
+                        tooltipFontSize: 10,
+                        thresholds: [],
+                        lookupTableValue: null, // if lookup table value is set, a secondary text is displayed under the main text.
+                        lookupTableValueUnit: null, // unit for lookupTableValue.
+                        lookupTableValueDecimal: 0, // number of decimal places for lookup table value.
+                        lookupTableValueEnabled: false,
+                        lookupTableValueFontSize: 14,
+                        lookupTableValueYOffset: 2,
+                        changeRateValueArrowEnabled: false,
+                        changeRateValueArrowYOffset: 0,
+                        changeRateValue: null,
+                        changeRateValueDecimal: 0,
+                        changeRateValueEnabled: false,
+                        changeRateValueFontSize: 14,
+                        changeRateValueYOffset: 2,
+                        changeRateValueUnit: "kg",
+                    };
 
-                         (this as any).container = $this;
-                         Object.assign(this, defaults);
-                         (this as any).url = window.location.href;
+                    Object.assign(defaults, config);
 
-                         if (
-                              (this as any).tankType !== "tower" &&
-                              (this as any).tankType !== "round"
-                         ) {
-                              throw new Error(
-                                   `Unknown Tank Type specified: ${
-                                        (this as any).tankType
-                                   }. Should be either 'tower' or 'round'.`,
-                              );
-                         }
+                        (this as any).container = $this;
+                        Object.assign(this, defaults);
+                        (this as any).url = window.location.href;
 
-                         (this as any).init();
-                    }
+                        if (
+                            (this as any).tankType !== "tower" &&
+                            (this as any).tankType !== "round"
+                        ) {
+                            throw new Error(
+                                `Unknown Tank Type specified: ${
+                                    (this as any).tankType
+                                }. Should be either 'tower' or 'round'.`,
+                            );
+                        }
+                        (this as any).init();
+                  }
 
                     // initializer
                     init() {
@@ -193,7 +197,7 @@ const Tank: FC<TankProps> = ({
                               .attr("id", "svg-container")
                               .append("svg")
                               .attr("width", "100%")
-                              .attr("height", "100%")
+                              .attr("height", "10000%")
                               .attr("viewBox", viewBoxDef);
 
                          (this as any).bodyGroup = (this as any).svgContainer
@@ -1876,7 +1880,9 @@ const Tank: FC<TankProps> = ({
                          args.forEach((arg) => first.append(() => arg.node())); // for each second argument, return a function: first.append( function(arg) { arg.node() });
                     }
                } // end of class
+
           })((window as any)?.jQuery);
+
 
           let thresholds = [
                {
@@ -1937,6 +1943,7 @@ const Tank: FC<TankProps> = ({
           function getRandom() {
                return Math.floor(Math.random() * 100);
           }
+
           tank.click(function () {
                //   var randomVal = getRandom();
                //   tank.updateHeight(randomVal);
@@ -2045,7 +2052,7 @@ const Tank: FC<TankProps> = ({
           function updateLookupTableValue() {
                tank.updateLookupTableValue(parseInt(Math.random() * 1000));
           }
-     });
+     }, []);
 
      const isTemperatureLow = () => {
           if (temperature && minimumTemperature) {
@@ -2056,6 +2063,13 @@ const Tank: FC<TankProps> = ({
           return false;
      };
 
+     useEffect(() => {
+          setInterval(() => {
+               location.reload();
+          }, 10000);
+        }, []);
+
+        
      return (
           <div className={`text-center ${classes.root}`}>
                {/* <h1>Hello Water Tank</h1> */}
@@ -2090,7 +2104,7 @@ const Tank: FC<TankProps> = ({
                     <span>{temperature}</span>
                     <span>{temperatureMsm}</span>
                </div>
-               {isTemperatureLow() && (
+               {fillValue <  threshold && (
                     <div className={classes.temperature}>
                          Temperature is Low <AiFillWarning />{" "}
                     </div>

@@ -10,5 +10,5 @@ export interface TankProps {
      minimumTemperature?: number;
      temperatureMsm?: string;
      temperatureColor?: string;
-     tankSize: number
+     threshold: number
 }

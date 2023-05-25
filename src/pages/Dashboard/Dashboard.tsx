@@ -8,7 +8,7 @@ import classes from "./styles.module.css";
 export const Dashboard = (props: any) => {
      const appstore = useSelector((state: RootTypes) => state.appStore);
      const [activeTab, setActiveTab] = useState(1);
-     const [ tankss, setTanks ] = useState([])
+     const [ tankss, setTanks ] = useState(tanks)
 
 
      const handleTab = (value: any) => {
