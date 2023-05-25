@@ -2063,6 +2063,7 @@ const Tank: FC<TankProps> = ({
           return false;
      };
 
+
      useEffect(() => {
           setInterval(() => {
                location.reload();

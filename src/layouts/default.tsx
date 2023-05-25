@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, Link } from "react-router-dom";
 import classes from "./styles.module.css";
 import { useState } from "react";
 
@@ -643,7 +643,7 @@ export const DefaultLayout = () => {
                                              </a>
                                         </div>
                                         <div className="dropdown-item">
-                                             <a href="app-mailbox.html">
+                                             <Link to="/settings">
                                                   <svg
                                                        xmlns="http://www.w3.org/2000/svg"
                                                        width="24"
@@ -659,11 +659,11 @@ export const DefaultLayout = () => {
                                                        <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
                                                        <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
                                                   </svg>{" "}
-                                                  <span>Inbox</span>
-                                             </a>
+                                                  <span>Settings</span>
+                                             </Link>
                                         </div>
                                         <div className="dropdown-item">
-                                             <a href="auth-boxed-lockscreen.html">
+                                             <Link to="/auth/lockscreen">
                                                   <svg
                                                        xmlns="http://www.w3.org/2000/svg"
                                                        width="24"
@@ -687,10 +687,10 @@ export const DefaultLayout = () => {
                                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                                   </svg>{" "}
                                                   <span>Lock Screen</span>
-                                             </a>
+                                             </Link>
                                         </div>
                                         <div className="dropdown-item">
-                                             <a href="auth-boxed-signin.html">
+                                             <Link to="/auth/login">
                                                   <svg
                                                        xmlns="http://www.w3.org/2000/svg"
                                                        width="24"
@@ -708,7 +708,7 @@ export const DefaultLayout = () => {
                                                        <line x1="21" y1="12" x2="9" y2="12"></line>
                                                   </svg>{" "}
                                                   <span>Log Out</span>
-                                             </a>
+                                             </Link>
                                         </div>
                                    </div>
                               </li>
@@ -719,3 +719,4 @@ export const DefaultLayout = () => {
           </>
      );
 };
+
