@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
 import { RootTypes } from "../../store";
 import Tank from "../../components/waterTank/tank.tsx";
@@ -6,34 +6,39 @@ import { tabs, tanks } from "./data.ts";
 import classes from "./styles.module.css";
 import { TankProps } from "./types.ts";
 import { useGetTanks } from "./hooks.ts";
+import { AppContext } from "../appState.tsx";
 
 export const Dashboard = (props: any) => {
      const appstore = useSelector((state: RootTypes) => state.appStore);
      const [activeTab, setActiveTab] = useState(1);
-     const [tankss, setTanks] = useState<TankProps[] | null>(null);
+     // const [tanksStore, setTanksStore] = useState<TankProps[] | null>(null);
      const getTanks = useGetTanks();
+     const { tanksStore, setTanksStore } = useContext<{
+          tanksStore: TankProps[] | null;
+          setTanksStore: any;
+     }>(AppContext);
 
      const handleTab = (value: any) => {
           setActiveTab(value);
      };
 
-     function forceUpdate() {
-          location.reload();
-          // setTanks(tanks)
-     }
-
      useEffect(() => {
-          setInterval(() => {
-               setTanks(null);
-               setTanks(getTanks());
-          }, 1000);
+          setTanksStore(getTanks());
+          const refreshTanks = setInterval(() => {
+               setTanksStore(null);
+               setTanksStore(getTanks());
+          }, 10000);
+
+          return () => {
+               clearInterval(refreshTanks);
+          };
      }, []);
 
      return (
           <div>
                <div className="main-container " id="container">
                     <div id="content" className="main-content">
-                         {tankss ? (
+                         {tanksStore ? (
                               <div className="middle-content">
                                    <div className="mb-4">
                                         <nav
@@ -46,17 +51,6 @@ export const Dashboard = (props: any) => {
                                                   </li>
                                              </ol>
                                         </nav>
-                                   </div>
-                                   <div className="row">
-                                        <div className="col-md-11"></div>
-                                        <div className="col-md-1 ">
-                                             <button
-                                                  className="btn pull-right float-right btn-success"
-                                                  onClick={() => forceUpdate()}
-                                             >
-                                                  Refresh
-                                             </button>
-                                        </div>
                                    </div>
 
                                    <div className="row">
@@ -93,7 +87,7 @@ export const Dashboard = (props: any) => {
                                    </div>
                                    {activeTab === 1 ? (
                                         <div className={classes.containerRoot}>
-                                             {tankss
+                                             {tanksStore
                                                   ?.filter((tank) => tank?.type === "normal")
                                                   ?.map((tankProps, idx) => (
                                                        <Tank {...tankProps} />
@@ -105,7 +99,7 @@ export const Dashboard = (props: any) => {
                                                   className={classes.containerRoot}
                                                   style={{ width: "50%" }}
                                              >
-                                                  {tankss
+                                                  {tanksStore
                                                        ?.filter((tank) => tank?.type === "premix")
                                                        ?.map((tankProps, idx) => (
                                                             <Tank {...tankProps} />
@@ -115,7 +109,7 @@ export const Dashboard = (props: any) => {
                                                   className={classes.containerRoot}
                                                   style={{ width: "50%" }}
                                              >
-                                                  {tankss
+                                                  {tanksStore
                                                        ?.filter((tank) => tank?.type === "mix")
                                                        ?.map((tankProps, idx) => (
                                                             <Tank {...tankProps} />

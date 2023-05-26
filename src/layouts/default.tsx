@@ -1,12 +1,24 @@
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import classes from "./styles.module.css";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../pages/appState";
+import { TankProps } from "../pages/Dashboard/types";
+import { useGetTanks } from "../pages/Dashboard/hooks";
 
 export const DefaultLayout = () => {
      const [showDropdown, setShowdropdown] = useState(false);
+     const { setTanksStore } = useContext<{
+          tanksStore: TankProps[] | null;
+          setTanksStore: any;
+     }>(AppContext);
+     const getTanks = useGetTanks();
 
      const toggleShowDropDown = () => {
           setShowdropdown((prev) => !prev);
+     };
+
+     const handleRefresh = () => {
+          setTanksStore(getTanks());
      };
 
      return (
@@ -90,7 +102,13 @@ export const DefaultLayout = () => {
                                         </svg>
                                    </div>
                               </form>
-                              <span className="badge badge-secondary">Ctrl + /</span>
+                              <span
+                                   className="badge badge-secondary"
+                                   style={{ cursor: "pointer" }}
+                                   onClick={handleRefresh}
+                              >
+                                   Refresh
+                              </span>
                          </div>
                          <div className="search-animated toggle-search ml-5"></div>
                          <div className="search-animated toggle-search ml-5">
@@ -719,4 +737,3 @@ export const DefaultLayout = () => {
           </>
      );
 };
-

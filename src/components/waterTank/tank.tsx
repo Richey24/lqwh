@@ -22,11 +22,11 @@ const Tank: FC<TankProps> = ({
      const containerRef = useRef(null);
      const elm = useRef(null);
      const tankRef = useRef(null);
-     // Similar to componentDidMount and componentDidUpdate:
+
      const classN = `${title}-${Math.random(10)}-${fillMaxValue}`
           .replace(" ", "_")
           .replace(".", "_");
-     // console.log(classN);
+
      useEffect(() => {
           (function ($) {
                $.fn.analogTank = function (config: any) {
@@ -1882,12 +1882,6 @@ const Tank: FC<TankProps> = ({
                } // end of class
           })((window as any)?.jQuery);
 
-          console.log("log", tankRef.current);
-          // if (tankRef.current) {
-          //      // window?.tank.updateHeight(fillValue);
-          //      tankRef.current.updateHeight(fillValue);
-          //      return;
-          // }
           let thresholds = [
                {
                     name: "Alarm High",
@@ -2067,23 +2061,16 @@ const Tank: FC<TankProps> = ({
           return false;
      };
 
-     // useEffect(() => {
-     //      setInterval(() => {
-     //           location.reload();
-     //      }, 10000);
-     //    }, []);
-
      useEffect(() => {
-          tankRef.current.updateHeight(fillValue);
+          tankRef?.current.updateHeight(fillValue);
      }, [fillValue]);
 
      return (
           <div className={`text-center ${classes.root}`}>
-               {/* <h1>Hello Water Tank</h1> */}
                <div id="empty-space"></div>
                <h4>{title}</h4>
                <p>Size: {fillMaxValue}</p>
-               <div className="tester" ref={containerRef}>
+               <div className={`tester ${classes.tester}`} ref={containerRef}>
                     <div id="wrapper" className={`${classN}`}></div>
                </div>
 

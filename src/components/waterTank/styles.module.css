@@ -7,17 +7,23 @@
      padding: 16px 8px;
      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
-.root > div#svg-container {
-     border: 1px solid red;
-}
-.root > div > svg:first-child {
-     /* display: none; */
-     /* height: 10px; */
-     /* border: 1px solid red; */
+
+.root > .tester > div > svg {
+     position: absolute;
+     z-index: 10;
+     /* height: 300px !important; */
+     top: 0;
+     right: 0;
+     left: 0;
+     bottom: 0;
+     height: 300px;
 }
 
+.root > .tester > div {
+     position: relative;
+     height: 300px;
+}
 .wrapper {
-     border: 1px solid red;
      height: 150px;
 }
 
