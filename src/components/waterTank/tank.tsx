@@ -1,4 +1,5 @@
-import { useState, useEffect, FC, useRef } from "react";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { useEffect, FC, useRef } from "react";
 import $ from "jquery";
 import image from "../../assets/img/image.png";
 import classes from "./styles.module.css";
@@ -8,9 +9,7 @@ import { AiFillWarning } from "react-icons/ai";
 const Tank: FC<TankProps> = ({
      color,
      fillMaxValue,
-     backFontColor,
      fillValue,
-     clName,
      type,
      title,
      threshold,
@@ -20,12 +19,9 @@ const Tank: FC<TankProps> = ({
      minimumTemperature,
 }) => {
      const containerRef = useRef(null);
-     const elm = useRef(null);
-     const tankRef = useRef(null);
+     const tankRef = useRef<any>(null);
 
-     const classN = `${title}-${Math.random(10)}-${fillMaxValue}`
-          .replace(" ", "_")
-          .replace(".", "_");
+     const classN = `${title}-${Math.random()}-${fillMaxValue}`.replace(" ", "_").replace(".", "_");
 
      useEffect(() => {
           (function ($) {
@@ -71,7 +67,7 @@ const Tank: FC<TankProps> = ({
                               horizontalWaveDuration: 2000,
                               transitionDuration: 1000,
                               delay: 0,
-                              ease: (d3 as any)?.easePolyInOut.exponent(4),
+                              ease: ((window as any)?.d3 as any)?.easePolyInOut.exponent(4),
                               marker: true,
                               markerPosition: "in",
                               markerGap: [5, 3],
@@ -146,7 +142,7 @@ const Tank: FC<TankProps> = ({
 
                          Object.assign(defaults, config);
 
-                         (this as any).container = $this;
+                         (this as any).container = $this as any;
                          Object.assign(this, defaults);
                          (this as any).url = window.location.href;
 
@@ -192,7 +188,7 @@ const Tank: FC<TankProps> = ({
                          (this as any).height = (this as any).container.outerHeight();
                          let viewBoxDef = `0, 0, ${(this as any).width}, ${(this as any).height}`;
 
-                         (this as any).svgContainer = d3
+                         (this as any).svgContainer = (window as any)?.d3
                               .select((this as any).container[0])
                               .attr("id", "svg-container")
                               .append("svg")
@@ -213,7 +209,7 @@ const Tank: FC<TankProps> = ({
 
                     // scale that returns pixel value for positioning the waveClip vertically
                     setGaugeScale() {
-                         (this as any).gaugeScale = d3
+                         (this as any).gaugeScale = (window as any)?.d3
                               .scaleLinear()
                               .domain([(this as any).fillMinValue, (this as any).fillMaxValue])
                               .range([
@@ -421,10 +417,10 @@ const Tank: FC<TankProps> = ({
                     }
 
                     addThresholdMarkers() {
-                         let topPixelPosition =
+                         const topPixelPosition =
                               (this as any).gaugeScale((this as any).fillMaxValue) +
                               (this as any).borderWidth;
-                         let color = (this as any).tankType === "round" ? "#fafafa" : "#000";
+                         const color = (this as any).tankType === "round" ? "#fafafa" : "#000";
 
                          if ((this as any).tankType === "round") {
                               (this as any).markerBarGroup
@@ -438,7 +434,7 @@ const Tank: FC<TankProps> = ({
                                    .attr("stroke", color)
                                    .attr("stroke-linecap", "round");
 
-                              let bottomPixelPosition =
+                              const bottomPixelPosition =
                                    (this as any).gaugeScale((this as any).fillMinValue) -
                                    (this as any).borderWidth;
                               (this as any).markerBarGroup
@@ -468,10 +464,10 @@ const Tank: FC<TankProps> = ({
                          (this as any).thresholdMarkers = [];
 
                          (this as any).thresholds.forEach((threshold: any, i: number) => {
-                              let id = (this as any).uniqId();
-                              let pixelPosition = (this as any).gaugeScale(threshold.value);
+                              const id = (this as any).uniqId();
+                              const pixelPosition = (this as any).gaugeScale(threshold.value);
 
-                              let marker = (this as any).markerBarGroup
+                              const marker = (this as any).markerBarGroup
                                    .append("line")
                                    .datum({
                                         yCoord: pixelPosition,
@@ -486,7 +482,7 @@ const Tank: FC<TankProps> = ({
                                    .attr("stroke-width", (this as any).markerWidth)
                                    .attr("stroke", threshold.alarm ? "red" : color);
 
-                              let tooltip = d3
+                              const tooltip = (window as any)?.d3
                                    .select((this as any).container[0])
                                    .append("div")
                                    .datum({
@@ -634,43 +630,43 @@ const Tank: FC<TankProps> = ({
                                    "stroke-width": (this as any).borderWidth,
                               });
 
-                              let xCoord = (this as any).getXCoordOfEllipse(
+                              const xCoord = (this as any).getXCoordOfEllipse(
                                    ((this as any).tankRy / 8) * 7,
                               );
 
-                              let topRight = `${xCoord} ${((this as any).tankRy / 8) * 7}`;
-                              let bottomRight = `${(this as any).tankRx / 4} ${
+                              const topRight = `${xCoord} ${((this as any).tankRy / 8) * 7}`;
+                              const bottomRight = `${(this as any).tankRx / 4} ${
                                    (this as any).height -
                                    (this as any).tankRy -
                                    (this as any).borderWidth / 2
                               }`;
 
-                              let topLeft = `-${xCoord} ${((this as any).tankRy / 8) * 7}`;
-                              let bottomLeft = `-${(this as any).tankRx / 4} ${
+                              const topLeft = `-${xCoord} ${((this as any).tankRy / 8) * 7}`;
+                              const bottomLeft = `-${(this as any).tankRx / 4} ${
                                    (this as any).height -
                                    (this as any).tankRy -
                                    (this as any).borderWidth / 2
                               }`;
 
-                              let topRightInflectionPt = `${(this as any).tankRx / 4} ${
+                              const topRightInflectionPt = `${(this as any).tankRx / 4} ${
                                    (this as any).tankRy
                               }`;
-                              let bottomRightInflectionPt = `${(this as any).tankRx / 4} ${
+                              const bottomRightInflectionPt = `${(this as any).tankRx / 4} ${
                                    (this as any).tankRy
                               }`;
-                              let topLeftInflectionPt = `-${(this as any).tankRx / 4} ${
+                              const topLeftInflectionPt = `-${(this as any).tankRx / 4} ${
                                    (this as any).tankRy
                               }`;
-                              let bottomLeftInflectionPt = `-${(this as any).tankRx / 4} ${
+                              const bottomLeftInflectionPt = `-${(this as any).tankRx / 4} ${
                                    (this as any).tankRy
                               }`;
 
                               // for debug purpose
-                              // let topRightInfxPt = (this as any).tankGroup.append('circle').attr('r', 2).attr('fill','red').attr('transform', `translate(${topRightInflectionPt})`);
-                              // let bottomRightInfxPt = (this as any).tankGroup.append('circle').attr('r', 2).attr('fill','red').attr('transform', `translate(${bottomRightInflectionPt})`);
+                              // const topRightInfxPt = (this as any).tankGroup.append('circle').attr('r', 2).attr('fill','red').attr('transform', `translate(${topRightInflectionPt})`);
+                              // const bottomRightInfxPt = (this as any).tankGroup.append('circle').attr('r', 2).attr('fill','red').attr('transform', `translate(${bottomRightInflectionPt})`);
 
-                              let neckFillPathDef = `M${topRight}, C${topRightInflectionPt}, ${bottomRightInflectionPt}, ${bottomRight}, L${bottomLeft}, C${bottomLeftInflectionPt}, ${topLeftInflectionPt}, ${topLeft} Z`;
-                              let neckBorderDef = `M${topRight}, C${topRightInflectionPt}, ${bottomRightInflectionPt}, ${bottomRight}, L${bottomLeft}, C${bottomLeftInflectionPt}, ${topLeftInflectionPt}, ${topLeft}`;
+                              const neckFillPathDef = `M${topRight}, C${topRightInflectionPt}, ${bottomRightInflectionPt}, ${bottomRight}, L${bottomLeft}, C${bottomLeftInflectionPt}, ${topLeftInflectionPt}, ${topLeft} Z`;
+                              const neckBorderDef = `M${topRight}, C${topRightInflectionPt}, ${bottomRightInflectionPt}, ${bottomRight}, L${bottomLeft}, C${bottomLeftInflectionPt}, ${topLeftInflectionPt}, ${topLeft}`;
 
                               (this as any).applyAttributes((this as any).neckFill, {
                                    datum: { color: (this as any).fillColor },
@@ -694,7 +690,7 @@ const Tank: FC<TankProps> = ({
                     }
 
                     applyTextAttributes() {
-                         let transform = `translate(0, ${(this as any).fontSize / 4})`;
+                         const transform = `translate(0, ${(this as any).fontSize / 4})`;
 
                          (this as any).applyAttributes((this as any).behindText, {
                               datum: {
@@ -771,7 +767,7 @@ const Tank: FC<TankProps> = ({
                          });
 
                          if ((this as any).lookupTableValueEnabled) {
-                              let lookupTransform = `translate(0, ${
+                              const lookupTransform = `translate(0, ${
                                    (this as any).fontSize / 4 +
                                    (this as any).lookupTableValueFontSize +
                                    (this as any).lookupTableValueYOffset
@@ -833,7 +829,7 @@ const Tank: FC<TankProps> = ({
                                         (this as any).lookupTableValueYOffset;
                               }
 
-                              let rateTransform = `translate(0, ${yOffset})`;
+                              const rateTransform = `translate(0, ${yOffset})`;
 
                               (this as any).applyAttributes(
                                    (this as any).changeRateValueBehindText,
@@ -884,7 +880,7 @@ const Tank: FC<TankProps> = ({
                          (this as any).clipDef = `M0 0 Q${(this as any).waveWidth / 2} ${
                               (this as any).amplitude
                          }, ${(this as any).waveWidth} 0 T${2 * (this as any).waveWidth} 0`;
-                         var minRequiredClipWidth =
+                         const minRequiredClipWidth =
                               (this as any).width * 2 +
                               2 * (this as any).waveWidth +
                               (this as any).borderWidth / 2;
@@ -946,14 +942,14 @@ const Tank: FC<TankProps> = ({
                     }
 
                     tweenWaveHorizontal() {
-                         let that = this;
-                         let startHeight =
+                         let that = this as any;
+                         const startHeight =
                               ((this as any).tankHeight - (this as any).innerHeight) / 2 -
                               (this as any).amplitude / 2;
-                         let transformStart = `translate(-${
+                         const transformStart = `translate(-${
                               (this as any).width + 2 * (this as any).waveWidth
                          }, ${startHeight})`;
-                         let transformEnd = `translate(-${(this as any).width}, ${startHeight})`;
+                         const transformEnd = `translate(-${(this as any).width}, ${startHeight})`;
 
                          (this as any).waveHorizontal.attr("transform", transformStart);
 
@@ -991,7 +987,7 @@ const Tank: FC<TankProps> = ({
                     }
 
                     animateNewHeight(val) {
-                         let that = this;
+                         let that = this as any;
                          if (typeof val !== "undefined") {
                               (this as any).newHeight = (this as any).gaugeScale(val);
                               (this as any).fillValue = val;
@@ -1109,36 +1105,38 @@ const Tank: FC<TankProps> = ({
                     changeRateValueTextFormatter(val) {
                          if ((this as any).changeRateValueUnit) {
                               return `${Number(
-                                   Math.round(
-                                        parseFloat(val) +
+                                   (Math.round(
+                                        +(
+                                             parseFloat(val) +
                                              "e" +
-                                             (this as any).changeRateValueDecimal,
+                                             (this as any).changeRateValueDecimal
+                                        ),
                                    ) +
                                         "e-" +
-                                        (this as any).changeRateValueDecimal,
+                                        (this as any).changeRateValueDecimal) as unknown,
                               ).toFixed((this as any).changeRateValueDecimal)} ${
                                    (this as any).changeRateValueUnit
                               }`;
                          }
                          return `${Number(
-                              Math.round(
-                                   parseFloat(val) + "e" + (this as any).changeRateValueDecimal,
+                              (Math.round(
+                                   +(parseFloat(val) + "e" + (this as any).changeRateValueDecimal),
                               ) +
                                    "e-" +
-                                   (this as any).changeRateValueDecimal,
+                                   (this as any).changeRateValueDecimal) as unknown,
                          ).toFixed((this as any).changeRateValueDecimal)}`;
                     }
 
                     tweenText() {
-                         let that = this;
+                         let that = this as any;
 
                          (this as any).behindText
                               .transition()
                               .delay((this as any).delay)
                               .ease((this as any).ease)
                               .duration((this as any).transitionDuration)
-                              .tween("text", function (d: any) {
-                                   let node = this;
+                              .tween("text", () => {
+                                   let node = this as any;
                                    let interpolate = (window as any)?.d3.interpolate(
                                         (that as any).textFormatter(node.textContent),
                                         (that as any).textFormatter((that as any).fillValue),
@@ -1167,8 +1165,8 @@ const Tank: FC<TankProps> = ({
                               .delay((this as any).delay)
                               .ease((this as any).ease)
                               .duration((this as any).transitionDuration)
-                              .tween("text", function (d: any) {
-                                   let node = this;
+                              .tween("text", () => {
+                                   let node = this as any;
                                    let interpolate = (window as any)?.d3.interpolate(
                                         (that as any).textFormatter(node.textContent),
                                         (that as any).textFormatter((that as any).fillValue),
@@ -1205,8 +1203,8 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", function (d: any) {
-                                        let node = this;
+                                   .tween("text", () => {
+                                        let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).lookupTextFormatter(node.textContent),
                                              (that as any).lookupTextFormatter(
@@ -1237,8 +1235,8 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", function (d: any) {
-                                        let node = this;
+                                   .tween("text", () => {
+                                        let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).lookupTextFormatter(node.textContent),
                                              (that as any).lookupTextFormatter(
@@ -1270,8 +1268,8 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", function (d: any) {
-                                        let node = this;
+                                   .tween("text", () => {
+                                        let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).changeRateValueTextFormatter(
                                                   node.textContent,
@@ -1304,8 +1302,8 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", function (d: any) {
-                                        let node = this;
+                                   .tween("text", () => {
+                                        let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).changeRateValueTextFormatter(
                                                   node.textContent,
@@ -1771,9 +1769,9 @@ const Tank: FC<TankProps> = ({
                     }
 
                     hover() {
-                         d3.select((this as any).svgContainer.node().parentNode).on(
-                              "mouseleave",
-                              () => {
+                         ((window as any)?.d3 as any)
+                              .select((this as any).svgContainer.node().parentNode)
+                              .on("mouseleave", () => {
                                    (this as any).thresholdMarkers.forEach((marker, i) => {
                                         (this as any).transitionMarker(
                                              marker,
@@ -1782,12 +1780,11 @@ const Tank: FC<TankProps> = ({
                                         );
                                         (this as any).thresholdTooltips[i].style("display", "none");
                                    });
-                              },
-                         );
+                              });
 
-                         d3.select((this as any).svgContainer.node().parentNode).on(
-                              "mousemove",
-                              () => {
+                         ((window as any)?.d3)
+                              .select((this as any).svgContainer.node().parentNode)
+                              .on("mousemove", () => {
                                    let yCoord = (window as any)?.d3.mouse(
                                         (this as any).markerBarGroup.node(),
                                    )[1];
@@ -1831,8 +1828,7 @@ const Tank: FC<TankProps> = ({
                                              "initial",
                                         );
                                    }
-                              },
-                         );
+                              });
                     }
 
                     // utility functions
@@ -1919,16 +1915,16 @@ const Tank: FC<TankProps> = ({
                lookupTableValue: 1700,
                lookupTableValueUnit: "kG",
                lookupTableValueDecimal: 1,
-               changeRateValueDecimal: 3,
+               changeRateValueDecimal: 0,
                changeRateValueArrowEnabled: true,
-               changeRateValue: 0.3,
+               changeRateValue: fillValue,
                changeRateValueUnit: "kG",
           };
           // $("." + classN).html();
           let tank = $("." + classN).analogTank(options);
           tank.setSupportLabelText("Formula: 100121");
           tankRef.current = tank;
-          let that = this;
+          let that = this as any;
 
           let randomColor = ["#C62828", "#BA68C8", "#1976D2", "#FFB74D", "#607D8B"];
           function getRandomColor() {
@@ -1941,7 +1937,7 @@ const Tank: FC<TankProps> = ({
           function getRandom() {
                return Math.floor(Math.random() * 100);
           }
-
+          console.log(tank);
           tank.click(function () {
                //   var randomVal = getRandom();
                tank.updateHeight(3000);
@@ -2048,7 +2044,7 @@ const Tank: FC<TankProps> = ({
                tank.destroy();
           }
           function updateLookupTableValue() {
-               tank.updateLookupTableValue(parseInt(Math.random() * 1000));
+               tank.updateLookupTableValue(`${Math.random() * 1000}`);
           }
      }, []);
 
@@ -2062,7 +2058,10 @@ const Tank: FC<TankProps> = ({
      };
 
      useEffect(() => {
-          tankRef?.current.updateHeight(fillValue);
+          if (tankRef?.current) {
+               tankRef?.current.updateHeight(fillValue);
+               tankRef?.current.updateChangeRateValue(fillValue);
+          }
      }, [fillValue]);
 
      return (

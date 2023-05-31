@@ -16,16 +16,19 @@ window.$ = window.jQuery = $;
 function App() {
      return (
           <AppState>
-               <Routes>
-                    <Route path="/" element={<DefaultLayout />}>
-                         <Route path="/" element={<Dashboard />} />
-                         <Route path="settings" element={<Settings />} />
-                    </Route>
-                    <Route path="/auth" element={<Auth />}>
-                         <Route path="lockscreen" element={<Lockscreen />} />
-                         <Route path="login" element={<Login />} />
-                    </Route>
-               </Routes>
+               <>
+                  
+                    <Routes>
+                         <Route path="/" element={<DefaultLayout />}>
+                              <Route path="/" element={<Dashboard />} />
+                              <Route path="settings" element={<Settings />} />
+                         </Route>
+                         <Route path="/auth" element={<Auth />}>
+                              <Route path="lockscreen" element={<Lockscreen />} />
+                              <Route path="login" element={<Login />} />
+                         </Route>
+                    </Routes>
+               </>
           </AppState>
      );
 }

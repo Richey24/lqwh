@@ -1,6 +1,6 @@
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import {  Outlet, Link } from "react-router-dom";
 import classes from "./styles.module.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../pages/appState";
 import { TankProps } from "../pages/Dashboard/types";
 import { useGetTanks } from "../pages/Dashboard/hooks";

@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from "react";
-import { useSelector } from "react-redux";
-import { RootTypes } from "../../store";
+// import { useSelector } from "react-redux";
+// import { RootTypes } from "../../store";
 import Tank from "../../components/waterTank/tank.tsx";
-import { tabs, tanks } from "./data.ts";
+import { tabs } from "./data.ts";
 import classes from "./styles.module.css";
 import { TankProps } from "./types.ts";
 import { useGetTanks } from "./hooks.ts";
 import { AppContext } from "../appState.tsx";
 
-export const Dashboard = (props: any) => {
-     const appstore = useSelector((state: RootTypes) => state.appStore);
+export const Dashboard = () => {
+     // const appstore = useSelector((state: RootTypes) => state.appStore);
      const [activeTab, setActiveTab] = useState(1);
      // const [tanksStore, setTanksStore] = useState<TankProps[] | null>(null);
      const getTanks = useGetTanks();
@@ -90,7 +90,7 @@ export const Dashboard = (props: any) => {
                                              {tanksStore
                                                   ?.filter((tank) => tank?.type === "normal")
                                                   ?.map((tankProps, idx) => (
-                                                       <Tank {...tankProps} />
+                                                       <Tank {...tankProps} key={idx} />
                                                   ))}
                                         </div>
                                    ) : (
@@ -102,7 +102,7 @@ export const Dashboard = (props: any) => {
                                                   {tanksStore
                                                        ?.filter((tank) => tank?.type === "premix")
                                                        ?.map((tankProps, idx) => (
-                                                            <Tank {...tankProps} />
+                                                            <Tank {...tankProps} key={idx} />
                                                        ))}
                                              </div>
                                              <div
@@ -112,7 +112,7 @@ export const Dashboard = (props: any) => {
                                                   {tanksStore
                                                        ?.filter((tank) => tank?.type === "mix")
                                                        ?.map((tankProps, idx) => (
-                                                            <Tank {...tankProps} />
+                                                            <Tank {...tankProps} key={idx} />
                                                        ))}
                                              </div>
                                         </div>
