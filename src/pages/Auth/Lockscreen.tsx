@@ -1,54 +1,73 @@
-import { useState, useEffect } from 'react'
-import { Routes, Route, Outlet, Link } from "react-router-dom";
-export const Lockscreen = () => {
-    return (
-       <>
-         <div className="auth-container d-flex h-100">
-            <div className="container mx-auto align-self-center">
-                <div className="row">
-                    <div className="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-12 d-flex flex-column align-self-center mx-auto">
-                        <div className="card mt-3 mb-3">
-                            <div className="card-body">
+import { useContext, useState } from "react";
+import { Button, Modal, ModalBody } from "reactstrap";
+import { AppContext } from "../appState";
 
-                                <div className="row">
-                                    <div className="col-md-12 mb-3">
-                                        
-                                        <div className="media mb-4">
-                                            
-                                            <div className="avatar avatar-lg me-3">
-                                                <img alt="avatar" src="../src/assets/img/profile-7.jpeg" className="rounded-circle" />
-                                            </div>
+export function Lockscreen() {
+     const { open, setOpen } = useContext(AppContext);
+     const [backdrop] = useState(true);
+     const [keyboard] = useState(true);
 
-                                            <div className="media-body align-self-center">
-
-                                                <h3 className="mb-0">Shaun Park</h3>
-                                                <p className="mb-0">Enter your password to unlock your ID</p>
-
-                                            </div>
-                                            
+     return (
+          <Modal
+               isOpen={open}
+               //    toggle={toggle}
+               //    className={className}
+               backdrop={backdrop}
+               keyboard={keyboard}
+               style={{
+                    backgroundColor: "#fff",
+                    borderRadius: 8,
+                    boxShadow:
+                         "rgba(0, 0, 0, 0.4) 0px 1px 3px 0px, rgba(0, 0, 0, 0.01) 0px 1px 2px 0px",
+               }}
+          >
+               <ModalBody
+                    style={{
+                         backgroundColor: "#fff",
+                         borderRadius: 8,
+                         border: "1px solid #fff",
+                         outline: 0,
+                    }}
+               >
+                    <div className="card-body">
+                         <div className="row">
+                              <div className="col-md-12 mb-3">
+                                   <div className="media mb-4">
+                                        <div className="avatar avatar-lg me-3">
+                                             <img
+                                                  alt="avatar"
+                                                  src="../src/assets/img/profile-7.jpeg"
+                                                  className="rounded-circle"
+                                             />
                                         </div>
-                                        
-                                    </div>
-                                    <div className="col-12">
-                                        <div className="mb-4">
-                                            <label className="form-label">Password</label>
-                                            <input type="text" className="form-control" />
+
+                                        <div className="media-body align-self-center">
+                                             <h3 className="mb-0">Shaun Park</h3>
+                                             <p className="mb-0">
+                                                  Enter your password to unlock your ID
+                                             </p>
                                         </div>
-                                    </div>
-                                    <div className="col-12">
-                                        <div className="mb-4">
-                                            < Link to="/" className="btn btn-secondary w-100">UNLOCK</Link>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                
-                            </div>
-                        </div>
+                                   </div>
+                              </div>
+                              <div className="col-12">
+                                   <div className="mb-4">
+                                        <label className="form-label">Password</label>
+                                        <input type="text" className="form-control" />
+                                   </div>
+                              </div>
+                              <div className="col-12">
+                                   <div className="mb-4">
+                                        <Button
+                                             className="btn btn-secondary w-100"
+                                             onClick={() => setOpen(false)}
+                                        >
+                                             UNLOCK
+                                        </Button>
+                                   </div>
+                              </div>
+                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-       </>
-    );
-};
+               </ModalBody>
+          </Modal>
+     );
+}

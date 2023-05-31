@@ -23,7 +23,6 @@ export const tanks: TankProps[] = [
           threshold: 2000,
           clName: "tank1",
           title: "Line 1",
-          threshold: 2000,
           backFontColor: "#fe7968",
           fillValue: faker.number.int({ min: 1, max: 20000 }),
           type: "normal",

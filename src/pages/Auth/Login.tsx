@@ -32,7 +32,7 @@ export const Login = () => {
                                         <div className="mb-3">
                                             <div className="form-check form-check-primary form-check-inline">
                                                 <input className="form-check-input me-3" type="checkbox" id="form-check-default" />
-                                                <label className="form-check-label" for="form-check-default">
+                                                <label className="form-check-label" htmlFor="form-check-default">
                                                     Remember me
                                                 </label>
                                             </div>
