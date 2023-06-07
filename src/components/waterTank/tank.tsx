@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-no-shadow
 import { useEffect, FC, useRef } from "react";
 import $ from "jquery";
 import image from "../../assets/img/image.png";
@@ -17,6 +18,8 @@ const Tank: FC<TankProps> = ({
      temperatureColor,
      temperatureMsm,
      minimumTemperature,
+     batchNumber,
+     style,
 }) => {
      const containerRef = useRef(null);
      const tankRef = useRef<any>(null);
@@ -24,6 +27,8 @@ const Tank: FC<TankProps> = ({
      const classN = `${title}-${Math.random()}-${fillMaxValue}`.replace(" ", "_").replace(".", "_");
 
      useEffect(() => {
+          /*eslint no-shadow: ["error", { "hoist": "functions" }]*/
+          /*eslint-env es6*/
           (function ($) {
                $.fn.analogTank = function (config: any) {
                     let $this = $(this);
@@ -134,7 +139,7 @@ const Tank: FC<TankProps> = ({
                               changeRateValueArrowYOffset: 0,
                               changeRateValue: null,
                               changeRateValueDecimal: 0,
-                              changeRateValueEnabled: false,
+                              changeRateValueEnabled: true,
                               changeRateValueFontSize: 14,
                               changeRateValueYOffset: 2,
                               changeRateValueUnit: "kg",
@@ -1135,7 +1140,7 @@ const Tank: FC<TankProps> = ({
                               .delay((this as any).delay)
                               .ease((this as any).ease)
                               .duration((this as any).transitionDuration)
-                              .tween("text", () => {
+                              .tween("text", function (this: any) {
                                    let node = this as any;
                                    let interpolate = (window as any)?.d3.interpolate(
                                         (that as any).textFormatter(node.textContent),
@@ -1165,7 +1170,7 @@ const Tank: FC<TankProps> = ({
                               .delay((this as any).delay)
                               .ease((this as any).ease)
                               .duration((this as any).transitionDuration)
-                              .tween("text", () => {
+                              .tween("text", function (this: any) {
                                    let node = this as any;
                                    let interpolate = (window as any)?.d3.interpolate(
                                         (that as any).textFormatter(node.textContent),
@@ -1203,7 +1208,7 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", () => {
+                                   .tween("text", function (this: any) {
                                         let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).lookupTextFormatter(node.textContent),
@@ -1235,7 +1240,7 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", () => {
+                                   .tween("text", function (this: any) {
                                         let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).lookupTextFormatter(node.textContent),
@@ -1268,7 +1273,7 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", () => {
+                                   .tween("text", function (this: any) {
                                         let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).changeRateValueTextFormatter(
@@ -1302,7 +1307,7 @@ const Tank: FC<TankProps> = ({
                                    .delay((this as any).delay)
                                    .ease((this as any).ease)
                                    .duration((this as any).transitionDuration)
-                                   .tween("text", () => {
+                                   .tween("text", function (this: any) {
                                         let node = this as any;
                                         let interpolate = (window as any)?.d3.interpolate(
                                              (that as any).changeRateValueTextFormatter(
@@ -1771,7 +1776,7 @@ const Tank: FC<TankProps> = ({
                     hover() {
                          ((window as any)?.d3 as any)
                               .select((this as any).svgContainer.node().parentNode)
-                              .on("mouseleave", () => {
+                              .on("mouseleave", function (this: any) {
                                    (this as any).thresholdMarkers.forEach((marker, i) => {
                                         (this as any).transitionMarker(
                                              marker,
@@ -1784,7 +1789,7 @@ const Tank: FC<TankProps> = ({
 
                          ((window as any)?.d3)
                               .select((this as any).svgContainer.node().parentNode)
-                              .on("mousemove", () => {
+                              .on("mousemove", function (this: any) {
                                    let yCoord = (window as any)?.d3.mouse(
                                         (this as any).markerBarGroup.node(),
                                    )[1];
@@ -1918,6 +1923,7 @@ const Tank: FC<TankProps> = ({
                changeRateValueDecimal: 0,
                changeRateValueArrowEnabled: true,
                changeRateValue: fillValue,
+               marker: false,
                changeRateValueUnit: "kG",
           };
           // $("." + classN).html();
@@ -1937,10 +1943,9 @@ const Tank: FC<TankProps> = ({
           function getRandom() {
                return Math.floor(Math.random() * 100);
           }
-          console.log(tank);
           tank.click(function () {
                //   var randomVal = getRandom();
-               tank.updateHeight(3000);
+               // tank.updateHeight(3000);
           });
 
           function setOneText() {
@@ -2065,9 +2070,10 @@ const Tank: FC<TankProps> = ({
      }, [fillValue]);
 
      return (
-          <div className={`text-center ${classes.root}`}>
+          <div className={`text-center ${classes.root}`} style={style ? style : {}}>
                <div id="empty-space"></div>
                <h4>{title}</h4>
+
                <p>Size: {fillMaxValue}</p>
                <div className={`tester ${classes.tester}`} ref={containerRef}>
                     <div id="wrapper" className={`${classN}`}></div>
@@ -2084,7 +2090,7 @@ const Tank: FC<TankProps> = ({
                          <div className="col-sm-8">
                               <input
                                    type="text"
-                                   value="2323020"
+                                   value={batchNumber}
                                    className="form-control form-control-sm"
                                    id="colFormLabelSm"
                                    placeholder="col-form-label-sm"
@@ -2099,7 +2105,7 @@ const Tank: FC<TankProps> = ({
                     <span>{temperature}</span>
                     <span>{temperatureMsm}</span>
                </div>
-               {fillValue < threshold && (
+               {type !== "normal" && fillValue < threshold && (
                     <div className={classes.temperature}>
                          Temperature is Low <AiFillWarning />{" "}
                     </div>

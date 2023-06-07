@@ -4,7 +4,7 @@
           "lib": ["DOM", "DOM.Iterable", "ESNext"],
           "module": "ESNext",
           "skipLibCheck": true,
-
+          "checkJs": false,
           "esModuleInterop": true,
           "moduleResolution": "Node",
 
@@ -20,6 +20,7 @@
           "noUnusedLocals": false,
           "noUnusedParameters": false,
           "noFallthroughCasesInSwitch": true
+          // "ignoreTypeValueShadow": true
      },
      "include": ["src"],
      "references": [{ "path": "./tsconfig.node.json" }]

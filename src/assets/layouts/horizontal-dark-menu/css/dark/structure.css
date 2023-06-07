@@ -131,7 +131,7 @@ body.dark #content {
   transition: 0.3s ease all;
 }
 body.dark #content .middle-content {
-  padding: 0 32px !important;
+  /* padding: 0 32px !important; */
 }
 body.dark .main-container-fluid > .main-content > .container {
   float: left;
@@ -1337,7 +1337,7 @@ body.dark.alt-menu #content {
     margin-right: 0;
   }
   body.dark #content .middle-content {
-    padding: 0 16px !important;
+    /* padding: 0 16px !important; */
   }
 }
 @media (max-width: 991px) {

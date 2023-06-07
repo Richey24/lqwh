@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { store } from "./store";
 import App from "./App.tsx";
 import "./bootstrap/css/bootstrap.min.css";
 import "./assets/layouts/horizontal-light-menu/css/light/plugins.css";
@@ -12,10 +11,8 @@ import $ from "jquery";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
      <React.StrictMode>
-          <Provider store={store}>
-               <BrowserRouter>
-                    <App />
-               </BrowserRouter>
-          </Provider>
+          <BrowserRouter>
+               <App />
+          </BrowserRouter>
      </React.StrictMode>,
 );

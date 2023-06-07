@@ -1,212 +1,105 @@
 import { faker } from "@faker-js/faker";
+import axios from "axios";
+import { TankProps } from "./types";
+import { useContext } from "react";
+import { AppContext } from "../appState";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const useGetTanks = () => {
-     return () => {
-          return [
-               {
-                    color: "#038aff",
-                    fillMaxValue: 20000,
-                    threshold: 2000,
-                    clName: "tank1",
-                    title: "Line 1",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 6000,
-                    threshold: 600,
-                    clName: "tank2",
-                    title: "Line 2",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 6000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 6000,
-                    threshold: 6000,
-                    clName: "tank3",
-                    title: "Line 3",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 6000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 10000,
-                    threshold: 1000,
-                    clName: "tank4",
-                    title: "Line 4",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 10000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 20000,
-                    threshold: 2000,
-                    clName: "tank5",
-                    title: "Line 5",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 10000,
-                    threshold: 1000,
-                    clName: "tank6",
-                    title: "Line 6",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 10000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 6000,
-                    threshold: 6000,
-                    clName: "tank7",
-                    title: "Line 7",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 6000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 6000,
-                    threshold: 6000,
-                    clName: "tank8",
-                    title: "Line 8",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 6000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 100,
-                    clName: "tank9",
-                    threshold: 10,
-                    title: "Line 9",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 100 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 20000,
-                    threshold: 2000,
-                    clName: "tank10",
-                    title: "Line 10",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 20000,
-                    threshold: 2000,
-                    clName: "tank11",
-                    title: "Line 11",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 10000,
-                    threshold: 1000,
-                    clName: "tank12",
-                    title: "Line 12",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 10000 }),
-                    type: "normal",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 2000,
-                    clName: "tank20",
-                    title: "T11",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "premix",
-                    temperature: 55,
-                    threshold: 100,
-                    minimumTemperature: 60,
-                    temperatureMsm: "celcius",
-                    temperatureColor: "#DC3545",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 2000,
-                    clName: "tank21",
-                    title: "T11",
-                    threshold: 100,
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 10000 }),
-                    type: "premix",
-                    temperature: 30,
-                    minimumTemperature: 5,
-                    temperatureMsm: "celcius",
-                    temperatureColor: "#DC3545",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 2000,
-                    clName: "tank23",
-                    title: "T11",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 2000 }),
-                    type: "premix",
-                    threshold: 200,
-                    temperature: 15,
-                    minimumTemperature: 10,
-                    temperatureMsm: "celcius",
-                    temperatureColor: "#DC3545",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 20000,
-                    threshold: 200,
-                    clName: "tank24",
-                    title: "T11",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "mix",
-                    temperature: 45,
-                    minimumTemperature: 10,
-                    temperatureMsm: "celcius",
-                    temperatureColor: "#DC3545",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 20000,
-                    threshold: 200,
-                    clName: "tank25",
-                    title: "T11",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 20000 }),
-                    type: "mix",
-                    temperature: 13,
-                    minimumTemperature: 10,
-                    temperatureMsm: "celcius",
-                    temperatureColor: "#DC3545",
-               },
-               {
-                    color: "#038aff",
-                    fillMaxValue: 6000,
-                    threshold: 600,
-                    clName: "tank26",
-                    title: "T11",
-                    backFontColor: "#fe7968",
-                    fillValue: faker.number.int({ min: 1, max: 6000 }),
-                    type: "mix",
-                    temperature: 22,
-                    minimumTemperature: 10,
-                    temperatureMsm: "celcius",
-                    temperatureColor: "#DC3545",
-               },
-          ];
+     const { setTanksStore } = useContext<{
+          tanksStore: TankProps[] | null;
+          setTanksStore: any;
+     }>(AppContext);
+
+     return async () => {
+          try {
+               const response = await axios.get(`${baseUrl}/api/tank/gettanks`);
+               console.log(response);
+               if (response.status === 200) {
+                    const tankKeys = Object.keys(response.data);
+                    let tanks: TankProps[] = [];
+                    tankKeys.forEach((key) => {
+                         const names = key.split("_");
+                         if (tanks.some((tank) => tank.number === +names[1])) {
+                              const newTanks = tanks.map((tank) => {
+                                   if (tank.number === +names[1]) {
+                                        if (names[2] === "Batch") {
+                                             return {
+                                                  ...tank,
+                                                  batchNumber: response.data[key],
+                                             };
+                                        } else if (names[2] === "Weight") {
+                                             return {
+                                                  ...tank,
+                                                  fillValue: response.data[key],
+                                             };
+                                        } else if (names[2] === "Temp") {
+                                             return {
+                                                  ...tank,
+                                                  temperature: response.data[key],
+                                                  color: +names[1] === 809 ? "#DC3545" : "#038aff",
+                                                  minimumTemperature: 10,
+                                                  temperatureMsm: "celcius",
+                                                  temperatureColor: "#DC3545",
+                                                  type: +names[1] === 809 ? "HotWater" : "mix",
+                                                  title: `T${names[1]}`,
+                                             };
+                                        }
+                                   }
+
+                                   return tank;
+                              });
+
+                              tanks = newTanks;
+                         } else {
+                              if (names[2] === "Batch") {
+                                   tanks.push({
+                                        color: "#038aff",
+                                        fillMaxValue: 100,
+                                        threshold: 6000,
+                                        title: `Line ${names[1]}`,
+                                        fillValue: 0,
+                                        type: "normal",
+                                        number: +names[1],
+                                        batchNumber: response.data[key],
+                                   });
+                              } else if (names[2] === "Weight") {
+                                   tanks.push({
+                                        color: "#038aff",
+                                        fillMaxValue: 100,
+                                        threshold: 6000,
+                                        title: `Line ${names[1]}`,
+                                        fillValue: response.data[key],
+                                        type: "normal",
+                                        number: +names[1],
+                                        batchNumber: 0,
+                                   });
+                              } else if (names[2] === "Temp") {
+                                   tanks.push({
+                                        color: "#038aff",
+                                        fillMaxValue: 100,
+                                        threshold: 6000,
+                                        title: `T${names[1]}`,
+                                        fillValue: 0,
+                                        type: "mix",
+                                        number: +names[1],
+                                        batchNumber: 0,
+                                        temperature: response.data[key],
+                                        minimumTemperature: 10,
+                                        temperatureMsm: "celcius",
+                                        temperatureColor: "#DC3545",
+                                   });
+                              }
+                         }
+                    });
+                    // .filter((tank) => tank !== undefined);
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    setTanksStore(tanks.filter((tank) => tank.title.split(" ")[1] !== "CIP"));
+                    // console.log(response.data, tankKeys, tanks);
+               }
+               // return
+          } catch (err) {
+               console.log(err);
+          }
      };
 };
