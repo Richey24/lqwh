@@ -1,19 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-// import { useSelector } from "react-redux";
-// import { RootTypes } from "../../store";
 import Tank from "../../components/waterTank/tank.tsx";
 import { tabs } from "./data.ts";
 import classes from "./styles.module.css";
 import { TankProps } from "./types.ts";
-import { useGetTanks } from "./hooks.ts";
 import { AppContext } from "../appState.tsx";
 
 export const Dashboard = () => {
-     // const appstore = useSelector((state: RootTypes) => state.appStore);
      const [activeTab, setActiveTab] = useState(1);
-     // const [tanksStore, setTanksStore] = useState<TankProps[] | null>(null);
-     const getTanks = useGetTanks();
-     const { tanksStore, setTanksStore } = useContext<{
+     const { tanksStore } = useContext<{
           tanksStore: TankProps[] | null;
           setTanksStore: any;
      }>(AppContext);
@@ -22,21 +16,9 @@ export const Dashboard = () => {
           setActiveTab(value);
      };
 
-     useEffect(() => {
-          setTanksStore(getTanks());
-          const refreshTanks = setInterval(() => {
-               setTanksStore(null);
-               setTanksStore(getTanks());
-          }, 10000);
-
-          return () => {
-               clearInterval(refreshTanks);
-          };
-     }, []);
-
      return (
           <div>
-               <div className="main-container " id="container">
+               <div className="main-container" id="container">
                     <div id="content" className="main-content">
                          {tanksStore ? (
                               <div className="middle-content">
@@ -109,6 +91,11 @@ export const Dashboard = () => {
                                                   className={classes.containerRoot}
                                                   style={{ width: "50%" }}
                                              >
+                                                  {tanksStore
+                                                       ?.filter((tank) => tank?.type === "HotWater")
+                                                       ?.map((tankProps, idx) => (
+                                                            <Tank {...tankProps} key={idx} />
+                                                       ))}
                                                   {tanksStore
                                                        ?.filter((tank) => tank?.type === "mix")
                                                        ?.map((tankProps, idx) => (

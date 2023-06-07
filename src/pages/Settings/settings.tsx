@@ -1,210 +1,400 @@
-import { tanks } from "../Dashboard/data.ts";
+import React, { useContext, useEffect, useState } from "react";
+import {
+     Container,
+     Nav,
+     NavItem,
+     NavLink,
+     TabContent,
+     TabPane,
+     Row,
+     Col,
+     Button,
+     FormGroup,
+     Label,
+     Input,
+     Form,
+} from "reactstrap";
+import { TankUpdateForm } from "./UpdateTank/UpdateTank";
+import { AppContext } from "../appState";
+import { TankProps } from "../Dashboard/types";
+import Tank from "../../components/waterTank/tank";
+import { useSpring, animated } from "@react-spring/web";
 
-export const Settings = () => {
+interface ProfileData {
+     name: string;
+     email: string;
+     password: string;
+     image: string | null;
+}
+
+interface TankData {
+     tankName: string;
+     tankSize: string;
+}
+
+interface IdleScreenSettings {
+     enabled: boolean;
+     idleTime: number;
+}
+
+export const Settings: React.FC = () => {
+     const [activeTab, setActiveTab] = useState("profile");
+     const [activeTank, setActiveTank] = useState<any>(null);
+     const [springs, api] = useSpring(() => ({
+          from: { y: 100, opacity: 0 },
+     }));
+     const [profile, setProfile] = useState<ProfileData>({
+          name: "",
+          email: "",
+          password: "",
+          image: null,
+     });
+     const [polling, setPolling] = useState<any>({
+          time: 0,
+     });
+     const [idleScreenSettings, setIdleScreenSettings] = useState<IdleScreenSettings>({
+          enabled: false,
+          idleTime: 0,
+     });
+     const [tank, setTank] = useState<TankData>({
+          tankName: "",
+          tankSize: "",
+     });
+     const { tanksStore, setTanksStore } = useContext<{
+          tanksStore: TankProps[] | null;
+          setTanksStore: any;
+     }>(AppContext);
+
+     console.log(tanksStore);
+     const toggleTab = (tab: string) => {
+          if (activeTab !== tab) {
+               setActiveTab(tab);
+          }
+     };
+
+     useEffect(() => {
+          // if()
+     });
+
+     const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>) => {
+          const { name, value, files } = e.target;
+          if (name === "image" && files) {
+               const reader = new FileReader();
+               reader.onload = () => {
+                    if (reader.readyState === 2) {
+                         setProfile((prevState) => ({
+                              ...prevState,
+                              image: reader.result as string,
+                         }));
+                    }
+               };
+               reader.readAsDataURL(files[0]);
+          } else {
+               setProfile((prevState) => ({
+                    ...prevState,
+                    [name]: value,
+               }));
+          }
+     };
+
+     const handleTankChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const { name, value } = e.target;
+          setTank((prevState) => ({
+               ...prevState,
+               [name]: value,
+          }));
+     };
+
+     const handleIdleScreenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const { name, value, checked } = e.target;
+          if (name === "enabled") {
+               setIdleScreenSettings((prevState) => ({
+                    ...prevState,
+                    enabled: checked,
+               }));
+          } else if (name === "idleTime") {
+               setIdleScreenSettings((prevState) => ({
+                    ...prevState,
+                    idleTime: parseInt(value, 10),
+               }));
+          }
+     };
+
+     const handleSubmit = (e: React.FormEvent) => {
+          e.preventDefault();
+          // Handle profile update logic here
+          console.log("Updated profile:", profile);
+          if (activeTab === "polling") {
+               localStorage.setItem("polling", JSON.stringify(polling));
+          }
+     };
+
+     const handlePollingChange = (e: React.ChangeEvent) => {
+          setPolling({ time: (e.target as any).value });
+     };
+
+     const handleIdleScreenSubmit = (e: React.FormEvent) => {
+          e.preventDefault();
+          // Handle idle screen settings update logic here
+          console.log("Updated idle screen settings:", idleScreenSettings);
+     };
+
+     const handleDisplay = () => {
+          api.start({
+               from: {
+                    y: 100,
+                    opacity: 0,
+               },
+               to: {
+                    y: 0,
+                    opacity: 1,
+               },
+          });
+     };
+
      return (
-          <>
-               <div className="main-container " id="container">
-                    <div id="content" className="main-content">
-                         <div className="row">
-                              <div className="col-md-6">
-                                   <div className="table-responsive">
-                                        <div className="card">
-                                             <div className="card-body">
-                                                  <h5 className="card-title">Dummy Data</h5>
-                                                  <table
-                                                       className="table
-                                "
-                                                  >
-                                                       <thead>
-                                                            <tr>
-                                                                 <th scope="col">Title/Name</th>
-                                                                 <th scope="col">Fill Max Value</th>
-                                                                 <th scope="col">Type</th>
-                                                                 <th scope="col">Threshold</th>
-                                                                 <th>Actions</th>
-                                                            </tr>
-                                                       </thead>
-                                                       <tbody>
-                                                            {tanks
-                                                                 .filter(
-                                                                      (tank) =>
-                                                                           tank?.type === "normal",
-                                                                 )
-                                                                 .map((tankProps, idx) => (
-                                                                      <tr key={idx}>
-                                                                           <td>
-                                                                                {tankProps.title}
-                                                                           </td>
-                                                                           <td>
-                                                                                <svg
-                                                                                     xmlns="http://www.w3.org/2000/svg"
-                                                                                     width="24"
-                                                                                     height="24"
-                                                                                     viewBox="0 0 24 24"
-                                                                                     fill="none"
-                                                                                     stroke="currentColor"
-                                                                                     stroke-width="2"
-                                                                                     stroke-linecap="round"
-                                                                                     stroke-linejoin="round"
-                                                                                     className="feather feather-calendar"
-                                                                                >
-                                                                                     <rect
-                                                                                          x="3"
-                                                                                          y="4"
-                                                                                          width="18"
-                                                                                          height="18"
-                                                                                          rx="2"
-                                                                                          ry="2"
-                                                                                     ></rect>
-                                                                                     <line
-                                                                                          x1="16"
-                                                                                          y1="2"
-                                                                                          x2="16"
-                                                                                          y2="6"
-                                                                                     ></line>
-                                                                                     <line
-                                                                                          x1="8"
-                                                                                          y1="2"
-                                                                                          x2="8"
-                                                                                          y2="6"
-                                                                                     ></line>
-                                                                                     <line
-                                                                                          x1="3"
-                                                                                          y1="10"
-                                                                                          x2="21"
-                                                                                          y2="10"
-                                                                                     ></line>
-                                                                                </svg>
-                                                                                <span className="table-inner-text">
-                                                                                     {
-                                                                                          tankProps.fillMaxValue
-                                                                                     }
-                                                                                </span>
-                                                                           </td>
-                                                                           <td className="text-center">
-                                                                                {tankProps.type}
-                                                                           </td>
-                                                                           <td className="text-center">
-                                                                                {
-                                                                                     tankProps.threshold
-                                                                                }
-                                                                           </td>
-                                                                           <td>
-                                                                                <button className="btn btn-sm btn-primary">
-                                                                                     Update Tank
-                                                                                </button>
-                                                                           </td>
-                                                                      </tr>
-                                                                 ))}
-                                                       </tbody>
-                                                  </table>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                              <div className="col-md-6">
-                                   <div className="table-responsive">
-                                        <div className="card">
-                                             <div className="card-body">
-                                                  <h5 className="card-title">
-                                                       Dummy Data - Mix Tanks
-                                                  </h5>
-                                                  <table
-                                                       className="table
-                                "
-                                                  >
-                                                       <thead>
-                                                            <tr>
-                                                                 <th scope="col">Title/Name</th>
-                                                                 <th scope="col">Fill Max Value</th>
-                                                                 <th scope="col">Type</th>
-                                                                 <th scope="col">
-                                                                      Minimum Temperature
-                                                                 </th>
-                                                                 <th>Actions</th>
-                                                            </tr>
-                                                       </thead>
-                                                       <tbody>
-                                                            {tanks
-                                                                 .filter(
-                                                                      (tank) =>
-                                                                           tank?.type === "mix",
-                                                                 )
-                                                                 .map((tankProps) => (
-                                                                      <tr>
-                                                                           <td>
-                                                                                {tankProps.title}
-                                                                           </td>
-                                                                           <td>
-                                                                                <svg
-                                                                                     xmlns="http://www.w3.org/2000/svg"
-                                                                                     width="24"
-                                                                                     height="24"
-                                                                                     viewBox="0 0 24 24"
-                                                                                     fill="none"
-                                                                                     stroke="currentColor"
-                                                                                     stroke-width="2"
-                                                                                     stroke-linecap="round"
-                                                                                     stroke-linejoin="round"
-                                                                                     className="feather feather-calendar"
-                                                                                >
-                                                                                     <rect
-                                                                                          x="3"
-                                                                                          y="4"
-                                                                                          width="18"
-                                                                                          height="18"
-                                                                                          rx="2"
-                                                                                          ry="2"
-                                                                                     ></rect>
-                                                                                     <line
-                                                                                          x1="16"
-                                                                                          y1="2"
-                                                                                          x2="16"
-                                                                                          y2="6"
-                                                                                     ></line>
-                                                                                     <line
-                                                                                          x1="8"
-                                                                                          y1="2"
-                                                                                          x2="8"
-                                                                                          y2="6"
-                                                                                     ></line>
-                                                                                     <line
-                                                                                          x1="3"
-                                                                                          y1="10"
-                                                                                          x2="21"
-                                                                                          y2="10"
-                                                                                     ></line>
-                                                                                </svg>
-                                                                                <span className="table-inner-text">
-                                                                                     {
-                                                                                          tankProps.fillMaxValue
-                                                                                     }
-                                                                                </span>
-                                                                           </td>
-                                                                           <td className="text-center">
-                                                                                {tankProps.type}
-                                                                           </td>
-                                                                           <td className="text-center">
-                                                                                {
-                                                                                     tankProps.minimumTemperature
-                                                                                }
-                                                                           </td>
-                                                                           <td>
-                                                                                <button className="btn btn-sm btn-primary">
-                                                                                     Update Tank
-                                                                                </button>
-                                                                           </td>
-                                                                      </tr>
-                                                                 ))}
-                                                       </tbody>
-                                                  </table>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-                    </div>
+          <Container style={{ marginTop: 60 }}>
+               <h1 className="mb-4">Settings</h1>
+               <Nav tabs>
+                    <NavItem>
+                         <NavLink
+                              className={activeTab === "profile" ? "active" : ""}
+                              onClick={() => toggleTab("profile")}
+                         >
+                              Profile
+                         </NavLink>
+                    </NavItem>
+                    <NavItem>
+                         <NavLink
+                              className={activeTab === "tanks" ? "active" : ""}
+                              onClick={() => toggleTab("tanks")}
+                         >
+                              Update Tanks
+                         </NavLink>
+                    </NavItem>
+                    <NavItem>
+                         <NavLink
+                              className={activeTab === "idleScreen" ? "active" : ""}
+                              onClick={() => toggleTab("idleScreen")}
+                         >
+                              Idle Screen
+                         </NavLink>
+                    </NavItem>
+                    <NavItem>
+                         <NavLink
+                              className={activeTab === "polling" ? "active" : ""}
+                              onClick={() => toggleTab("polling")}
+                         >
+                              Polling
+                         </NavLink>
+                    </NavItem>
+               </Nav>
+               <TabContent
+                    activeTab={activeTab}
+                    style={{
+                         display: "flex",
+                         alignItems: "flex-start",
+                         justifyContent: "flex-start",
+                         padding: "32px",
+                         backgroundColor: "#fff",
+                         marginTop: 10,
+                         borderRadius: 8,
+                    }}
+               >
+                    <TabPane
+                         tabId="profile"
+                         style={{
+                              width: "100%",
+                         }}
+                    >
+                         <Row className="d-flex align-items-start justify-content-start">
+                              <Col sm="6" className="">
+                                   <Form>
+                                        <FormGroup>
+                                             <Label for="image">Profile Image</Label>
+                                             {profile.image && (
+                                                  <div className="mt-2 mb-2">
+                                                       <img
+                                                            src={profile.image}
+                                                            alt="Profile"
+                                                            className="img-fluid"
+                                                            style={{
+                                                                 borderRadius: "50%",
+                                                                 height: 100,
+                                                                 width: 100,
+                                                            }}
+                                                       />
+                                                  </div>
+                                             )}
+                                             <Input
+                                                  type="file"
+                                                  name="image"
+                                                  id="image"
+                                                  onChange={handleProfileChange}
+                                                  accept="image/*"
+                                             />
+                                        </FormGroup>
+                                        <FormGroup>
+                                             <Label for="name">Name</Label>
+                                             <Input
+                                                  type="text"
+                                                  name="name"
+                                                  id="name"
+                                                  value={profile.name}
+                                                  onChange={handleProfileChange}
+                                                  required
+                                             />
+                                        </FormGroup>
+                                        <FormGroup>
+                                             <Label for="email">Email</Label>
+                                             <Input
+                                                  type="email"
+                                                  name="email"
+                                                  id="email"
+                                                  value={profile.email}
+                                                  onChange={handleProfileChange}
+                                                  required
+                                             />
+                                        </FormGroup>
+                                        <FormGroup>
+                                             <Label for="password">Password</Label>
+                                             <Input
+                                                  type="password"
+                                                  name="password"
+                                                  id="password"
+                                                  value={profile.password}
+                                                  onChange={handleProfileChange}
+                                                  required
+                                             />
+                                        </FormGroup>
+                                   </Form>
+                              </Col>
+                         </Row>
+                    </TabPane>
+                    <TabPane
+                         tabId="tanks"
+                         style={{
+                              width: "100%",
+                         }}
+                    >
+                         <Row>
+                              <Col sm="6" className="">
+                                   <TankUpdateForm
+                                        tanks={tanksStore}
+                                        setActiveTank={setActiveTank}
+                                        handleDisplay={handleDisplay}
+                                   />
+                              </Col>
+                              <Col
+                                   sm="4"
+                                   className="d-flex align-items-center justify-content-center w-50"
+                              >
+                                   <animated.div
+                                        style={{
+                                             width: "50%",
+                                             ...springs,
+                                        }}
+                                   >
+                                        {activeTank && (
+                                             <Tank
+                                                  {...(activeTank as TankProps)}
+                                                  style={{ width: "100%", maxWidth: 350 }}
+                                             />
+                                        )}
+                                   </animated.div>
+                              </Col>
+                         </Row>
+                    </TabPane>
+                    <TabPane
+                         tabId="idleScreen"
+                         style={{
+                              width: "100%",
+                         }}
+                    >
+                         <Row>
+                              <Col sm="6" className="">
+                                   <Form onSubmit={handleIdleScreenSubmit}>
+                                        <FormGroup
+                                             switch
+                                             className="w-100 d-flex align-items-center justify-content-between m-0 p-0 py-1 pb-2"
+                                        >
+                                             <Label
+                                                  style={{ marginLeft: 0 }}
+                                                  className="ml-0"
+                                                  for="enabled"
+                                                  check
+                                             >
+                                                  Enable Idle Screen
+                                             </Label>
+                                             <Input
+                                                  type="switch"
+                                                  id="enabled"
+                                                  name="enabled"
+                                                  checked={idleScreenSettings.enabled}
+                                                  onChange={handleIdleScreenChange}
+                                             />
+                                        </FormGroup>
+                                        <FormGroup>
+                                             <Label for="idleTime">Idle Time (in minutes)</Label>
+                                             <Input
+                                                  type="number"
+                                                  name="idleTime"
+                                                  id="idleTime"
+                                                  value={idleScreenSettings.idleTime}
+                                                  onChange={handleIdleScreenChange}
+                                                  min={1}
+                                             />
+                                        </FormGroup>
+                                   </Form>
+                              </Col>
+                         </Row>
+                    </TabPane>
+                    <TabPane
+                         tabId="polling"
+                         style={{
+                              width: "100%",
+                         }}
+                    >
+                         <Row>
+                              <Col sm="6" className="">
+                                   <Form onSubmit={handleIdleScreenSubmit}>
+                                        <FormGroup>
+                                             <Label for="idleTime">Polling Time (in minutes)</Label>
+                                             <Input
+                                                  type="number"
+                                                  name="idleTime"
+                                                  id="idleTime"
+                                                  value={polling?.time || 1}
+                                                  onChange={handlePollingChange}
+                                                  min={1}
+                                             />
+                                        </FormGroup>
+                                   </Form>
+                              </Col>
+                         </Row>
+                    </TabPane>
+               </TabContent>
+               <div
+                    className="w-100 p-4 "
+                    style={{
+                         backgroundColor: "#fff",
+                         marginTop: 8,
+                         display: "flex",
+                         alignItems: "center",
+                         justifyContent: "flex-start",
+                         borderRadius: 8,
+                    }}
+               >
+                    <Button
+                         color="primary"
+                         style={{ marginLeft: 8 }}
+                         className="ml-2"
+                         // type="submit"
+                         onClick={handleSubmit}
+                    >
+                         Save Settings
+                    </Button>
                </div>
-          </>
+          </Container>
      );
 };

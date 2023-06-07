@@ -10,25 +10,24 @@ import { Settings } from "./pages/Settings/settings";
 //@ts-ignore
 import $ from "jquery";
 import { AppState } from "./pages/appState";
+import { Profile } from "./pages/Profile/Profile";
 //@ts-ignore
 window.$ = window.jQuery = $;
 
 function App() {
      return (
           <AppState>
-               <>
-                  
-                    <Routes>
-                         <Route path="/" element={<DefaultLayout />}>
-                              <Route path="/" element={<Dashboard />} />
-                              <Route path="settings" element={<Settings />} />
-                         </Route>
-                         <Route path="/auth" element={<Auth />}>
-                              <Route path="lockscreen" element={<Lockscreen />} />
-                              <Route path="login" element={<Login />} />
-                         </Route>
-                    </Routes>
-               </>
+               <Routes>
+                    <Route path="/" element={<DefaultLayout />}>
+                         <Route path="/" element={<Dashboard />} />
+                         <Route path="settings" element={<Settings />} />
+                         <Route path="profile" element={<Profile />} />
+                    </Route>
+                    <Route path="/auth" element={<Auth />}>
+                         <Route path="lockscreen" element={<Lockscreen />} />
+                         <Route path="login" element={<Login />} />
+                    </Route>
+               </Routes>
           </AppState>
      );
 }
