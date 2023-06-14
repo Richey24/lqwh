@@ -8,11 +8,14 @@ import "./assets/layouts/horizontal-light-menu/css/light/plugins.css";
 import "./index.css";
 import $ from "jquery";
 (window as any).$ = (window as any).jQuery = $;
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
      <React.StrictMode>
           <BrowserRouter>
                <App />
+               <ToastContainer />
           </BrowserRouter>
      </React.StrictMode>,
 );

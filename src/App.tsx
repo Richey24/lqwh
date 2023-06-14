@@ -5,12 +5,14 @@ import { DefaultLayout } from "./layouts/default";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Auth } from "./layouts/auth";
 import { Lockscreen } from "./pages/Auth/Lockscreen";
-import { Login } from "./pages/Auth/Login";
+import { Login } from "./pages/Auth/Login/Login";
 import { Settings } from "./pages/Settings/settings";
 //@ts-ignore
 import $ from "jquery";
 import { AppState } from "./pages/appState";
 import { Profile } from "./pages/Profile/Profile";
+import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
+import { Register } from "./pages/Auth/Register/Register";
 //@ts-ignore
 window.$ = window.jQuery = $;
 
@@ -18,7 +20,14 @@ function App() {
      return (
           <AppState>
                <Routes>
-                    <Route path="/" element={<DefaultLayout />}>
+                    <Route
+                         path="/"
+                         element={
+                              <ProtectedRoute>
+                                   <DefaultLayout />
+                              </ProtectedRoute>
+                         }
+                    >
                          <Route path="/" element={<Dashboard />} />
                          <Route path="settings" element={<Settings />} />
                          <Route path="profile" element={<Profile />} />
@@ -26,6 +35,7 @@ function App() {
                     <Route path="/auth" element={<Auth />}>
                          <Route path="lockscreen" element={<Lockscreen />} />
                          <Route path="login" element={<Login />} />
+                         <Route path="Register" element={<Register />} />
                     </Route>
                </Routes>
           </AppState>
