@@ -192,7 +192,6 @@ export const Settings: React.FC = () => {
           const newRole: Role = {
                id: newRoleId,
                name: "",
-               tanks: [],
           };
           // Add the new role to the state
           setRoles((prevState) => [...prevState, newRole]);
@@ -255,8 +254,6 @@ export const Settings: React.FC = () => {
                },
           });
      };
-
-     const handleCreateLoaction = () => {};
 
      console.log("selectedUser", selectedUser);
      return (
