@@ -19,6 +19,9 @@ import { AppContext } from "../appState";
 import { TankProps } from "../Dashboard/types";
 import Tank from "../../components/waterTank/tank";
 import { useSpring, animated } from "@react-spring/web";
+import { useGetLocations, useGetRoles } from "./hooks";
+import { IoMdAdd } from "react-icons/io";
+import { CreateLocationModal } from "./CreateLocation/CreateLocation";
 
 interface ProfileData {
      name: string;
@@ -37,13 +40,13 @@ interface IdleScreenSettings {
      idleTime: number;
 }
 
-interface Role {
+export interface Role {
      id: number;
      name: string;
-     tanks: string[];
+     // tanks: string[];
 }
 
-interface Location {
+export interface Location {
      id: number;
      name: string;
 }
@@ -82,33 +85,9 @@ export const Settings: React.FC = () => {
           tanksStore: TankProps[] | null;
           setTanksStore: any;
      }>(AppContext);
-     const [roles, setRoles] = useState<Role[]>([
-          {
-               id: 12,
-               name: "Manager",
-               tanks: [],
-          },
-          {
-               id: 1,
-               name: "User",
-               tanks: [],
-          },
-     ]);
-     const [locations, setLocations] = useState<Location[]>([
-          {
-               id: 12,
-               name: "London",
-          },
-          {
-               id: 1,
-               name: "California",
-          },
-     ]);
-     const [role, setRole] = useState<Role>({
-          name: "",
-          id: 1,
-          tanks: [],
-     });
+     const [roles, setRoles] = useState<Role[]>([]);
+     const [locations, setLocations] = useState<Location[]>([]);
+     const [role, setRole] = useState<Role | null>(null);
      const [users, setUsers] = useState<User[]>([
           {
                id: 12,
@@ -125,17 +104,22 @@ export const Settings: React.FC = () => {
      ]);
      const [selectedRole, setSelectedRole] = useState<null | Role>();
      const [tab, setTab] = useState(0);
+     const [locationModal, setLocationModal] = useState(false);
 
-     console.log(tanksStore);
+     const getRoles = useGetRoles();
+     const getLocations = useGetLocations();
+
      const toggleTab = (tab: string) => {
           if (activeTab !== tab) {
                setActiveTab(tab);
           }
      };
 
+     console.log(roles, "roles");
      useEffect(() => {
-          // if()
-     });
+          getRoles(setRoles);
+          getLocations(setLocations);
+     }, []);
 
      const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>) => {
           const { name, value, files } = e.target;
@@ -272,9 +256,16 @@ export const Settings: React.FC = () => {
           });
      };
 
+     const handleCreateLoaction = () => {};
+
      console.log("selectedUser", selectedUser);
      return (
           <Container style={{ marginTop: 60 }}>
+               <CreateLocationModal
+                    isOpen={locationModal}
+                    toggleModal={() => setLocationModal((prev) => !prev)}
+                    onCreateLocation={CreateLocationModal}
+               />
                <h1 className="mb-4">Settings</h1>
                <Nav tabs>
                     <NavItem>
@@ -554,7 +545,7 @@ export const Settings: React.FC = () => {
                                                        ))}
                                                   </Input>
                                              </FormGroup>
-                                             <FormGroup>
+                                             <FormGroup className="d-flex align-items-center gap-1">
                                                   <Input
                                                        type="select"
                                                        value={
@@ -585,6 +576,15 @@ export const Settings: React.FC = () => {
                                                             </option>
                                                        ))}
                                                   </Input>
+                                                  <Button
+                                                       color="primary"
+                                                       onClick={() =>
+                                                            setLocationModal((prev) => !prev)
+                                                       }
+                                                       className="ml-1 rounded-circle"
+                                                  >
+                                                       <IoMdAdd />
+                                                  </Button>
                                              </FormGroup>
                                              <div className="w-100 d-flex align-items-end justify-content-end">
                                                   <Button
