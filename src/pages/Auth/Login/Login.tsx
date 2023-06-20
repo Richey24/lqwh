@@ -76,7 +76,6 @@ export const Login = () => {
                     loading: true,
                }));
 
-               console.log("Logging in...");
                await login(
                     { email, password },
                     () => {
