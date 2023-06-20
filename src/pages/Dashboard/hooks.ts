@@ -14,7 +14,6 @@ export const useGetTanks = () => {
      return async () => {
           try {
                const response = await axios.get(`${baseUrl}/api/tank/gettanks`);
-               console.log(response);
                if (response.status === 200) {
                     const tankKeys = Object.keys(response.data);
                     let tanks: TankProps[] = [];

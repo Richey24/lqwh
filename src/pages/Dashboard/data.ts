@@ -13,6 +13,6 @@ function createRandomTankValue(): Tank {
 
 const Tank = createRandomTankValue();
 
-console.log(faker.number.int({ min: 1, max: 100 }));
+// console.log(faker.number.int({ min: 1, max: 100 }));
 
 export const tabs = ["Home", "Pre Mix/Mixing"];

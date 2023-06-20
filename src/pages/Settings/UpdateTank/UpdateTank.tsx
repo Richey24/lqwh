@@ -5,7 +5,7 @@ export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
      const [selectedTank, setSelectedTank] = useState("");
      const [updatedDetails, setUpdatedDetails] = useState<any>({});
 
-     console.log("details", updatedDetails);
+     // console.log("details", updatedDetails);
 
      const handleTankSelection = (event) => {
           const tankId = JSON.parse(event.target.value);
@@ -26,7 +26,7 @@ export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
 
      const handleSubmit = (event) => {
           event.preventDefault();
-          console.log("Updated Tank Details:", updatedDetails);
+          // console.log("Updated Tank Details:", updatedDetails);
      };
 
      return (

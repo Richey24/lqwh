@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 import React, { useContext, useEffect, useState } from "react";
 import {
      Container,
@@ -19,9 +21,9 @@ import { AppContext } from "../appState";
 import { TankProps } from "../Dashboard/types";
 import Tank from "../../components/waterTank/tank";
 import { useSpring, animated } from "@react-spring/web";
-import { useGetLocations, useGetRoles } from "./hooks";
-import { IoMdAdd } from "react-icons/io";
-import { CreateLocationModal } from "./CreateLocation/CreateLocation";
+import { useGetRoles } from "./hooks";
+import { TanksLocation } from "./TanksLocation/TanksLocation";
+import { RolesLocation } from "./RolesLocation/RolesLocation";
 
 interface ProfileData {
      name: string;
@@ -51,11 +53,11 @@ export interface Location {
      name: string;
 }
 
-interface User {
+export interface User {
      id: number | string;
      name: string;
      email: string;
-     role: Role | null;
+     role: number | null;
 }
 
 export const Settings: React.FC = () => {
@@ -77,48 +79,23 @@ export const Settings: React.FC = () => {
           enabled: false,
           idleTime: 0,
      });
-
-     const [selectedUser, setSelectedUser] = useState<null | User>(null);
-     const [selectedLocation, setSelectedLocation] = useState<null | Location>(null);
-
      const { tanksStore, setTanksStore } = useContext<{
           tanksStore: TankProps[] | null;
           setTanksStore: any;
      }>(AppContext);
      const [roles, setRoles] = useState<Role[]>([]);
-     const [locations, setLocations] = useState<Location[]>([]);
-     const [role, setRole] = useState<Role | null>(null);
-     const [users, setUsers] = useState<User[]>([
-          {
-               id: 12,
-               name: "victor",
-               email: "viktoh675",
-               role: null,
-          },
-          {
-               id: 2,
-               name: "ikenna",
-               email: "viktoh675",
-               role: null,
-          },
-     ]);
-     const [selectedRole, setSelectedRole] = useState<null | Role>();
      const [tab, setTab] = useState(0);
-     const [locationModal, setLocationModal] = useState(false);
 
      const getRoles = useGetRoles();
-     const getLocations = useGetLocations();
 
-     const toggleTab = (tab: string) => {
-          if (activeTab !== tab) {
-               setActiveTab(tab);
+     const toggleTab = (tabT: string) => {
+          if (activeTab !== tabT) {
+               setActiveTab(tabT);
           }
      };
 
-     console.log(roles, "roles");
      useEffect(() => {
           getRoles(setRoles);
-          getLocations(setLocations);
      }, []);
 
      const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>) => {
@@ -141,14 +118,6 @@ export const Settings: React.FC = () => {
                }));
           }
      };
-
-     // const handleTankChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-     //      const { name, value } = e.target;
-     //      setTank((prevState) => ({
-     //           ...prevState,
-     //           [name]: value,
-     //      }));
-     // };
 
      const handleIdleScreenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const { name, value, checked } = e.target;
@@ -181,7 +150,7 @@ export const Settings: React.FC = () => {
      const handleIdleScreenSubmit = (e: React.FormEvent) => {
           e.preventDefault();
           // Handle idle screen settings update logic here
-          console.log("Updated idle screen settings:", idleScreenSettings);
+          // console.log("Updated idle screen settings:", idleScreenSettings);
      };
 
      const handleRoleCreate = (e: React.FormEvent) => {
@@ -198,50 +167,6 @@ export const Settings: React.FC = () => {
           setTab(1);
      };
 
-     // const handleRoleNameChange = (e: React.ChangeEvent<HTMLInputElement>, roleId: number) => {
-     //      const { value } = e.target;
-     //      setRoles((prevState) => {
-     //           const selected = prevState.map((role) =>
-     //                role.id === roleId ? { ...role, name: value } : role,
-     //           );
-     //           setRole(selected);
-     //           return selected;
-     //      });
-     // };
-
-     // const handleTankVisibilityChange = (
-     //      e: React.ChangeEvent<HTMLInputElement>,
-     //      roleId: number,
-     //      tankP: string,
-     // ) => {
-     //      const { checked } = e.target;
-     //      setRoles((prevState) =>
-     //           prevState.map((role) =>
-     //                role.id === roleId
-     //                     ? {
-     //                            ...role,
-     //                            tanks: checked
-     //                                 ? [...role.tanks, tankP]
-     //                                 : role.tanks.filter((t) => t !== tankP),
-     //                       }
-     //                     : role,
-     //           ),
-     //      );
-     // };
-
-     const handleAssignRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
-          const { value } = e.target;
-          const selectedRoleL = roles.find((role) => role.id === parseInt(value));
-          if (selectedRoleL) setSelectedRole(selectedRoleL);
-     };
-
-     const handleChangeUser = (e: React.ChangeEvent<HTMLSelectElement>) => {
-          const { value: userId } = e.target;
-
-          if (users.find((user) => user.id === +userId))
-               setSelectedUser(users.find((user) => user.id === +userId) as User);
-     };
-
      const handleDisplay = () => {
           api.start({
                from: {
@@ -255,14 +180,9 @@ export const Settings: React.FC = () => {
           });
      };
 
-     console.log("selectedUser", selectedUser);
+     // console.log("selectedUser", selectedUser);
      return (
           <Container style={{ marginTop: 60 }}>
-               <CreateLocationModal
-                    isOpen={locationModal}
-                    toggleModal={() => setLocationModal((prev) => !prev)}
-                    onCreateLocation={CreateLocationModal}
-               />
                <h1 className="mb-4">Settings</h1>
                <Nav tabs>
                     <NavItem>
@@ -278,7 +198,7 @@ export const Settings: React.FC = () => {
                               className={activeTab === "tanks" ? "active" : ""}
                               onClick={() => toggleTab("tanks")}
                          >
-                              Update Tanks
+                              Tanks Configuration
                          </NavLink>
                     </NavItem>
                     <NavItem>
@@ -303,6 +223,14 @@ export const Settings: React.FC = () => {
                               onClick={() => toggleTab("roles")}
                          >
                               Roles & Locations
+                         </NavLink>
+                    </NavItem>
+                    <NavItem>
+                         <NavLink
+                              className={activeTab === "tanksLocations" ? "active" : ""}
+                              onClick={() => toggleTab("tanksLocations")}
+                         >
+                              Tanks & Locations
                          </NavLink>
                     </NavItem>
                </Nav>
@@ -496,108 +424,18 @@ export const Settings: React.FC = () => {
                               width: "100%",
                          }}
                     >
-                         <Row>
-                              <Col sm="6" className="">
-                                   <Form className="mt-4 w-100">
-                                        <Label for="assignRole" style={{ fontWeight: 600 }}>
-                                             Assign Role
-                                        </Label>
-                                        <Row className="w-100">
-                                             <Col className="">
-                                                  <FormGroup>
-                                                       <Input
-                                                            type="select"
-                                                            value={
-                                                                 selectedUser ? selectedUser.id : ""
-                                                            }
-                                                            onChange={(e) =>
-                                                                 handleChangeUser(e as any)
-                                                            }
-                                                       >
-                                                            <option value="">
-                                                                 -- Select User --
-                                                            </option>
-                                                            {users.map((user) => (
-                                                                 <option
-                                                                      key={user.id}
-                                                                      value={user.id}
-                                                                 >
-                                                                      {user.name}
-                                                                 </option>
-                                                            ))}
-                                                       </Input>
-                                                  </FormGroup>
-                                             </Col>
-                                             <FormGroup>
-                                                  <Input
-                                                       type="select"
-                                                       value={selectedRole ? selectedRole.id : ""}
-                                                       onChange={(e) => handleAssignRole(e as any)}
-                                                  >
-                                                       <option value="">-- Select Role --</option>
-                                                       {roles.map((role) => (
-                                                            <option key={role.id} value={role.id}>
-                                                                 {role.name}
-                                                            </option>
-                                                       ))}
-                                                  </Input>
-                                             </FormGroup>
-                                             <FormGroup className="d-flex align-items-center gap-1">
-                                                  <Input
-                                                       type="select"
-                                                       value={
-                                                            selectedLocation
-                                                                 ? selectedLocation.id
-                                                                 : ""
-                                                       }
-                                                       onChange={(e) => {
-                                                            const { value } = e.target;
-                                                            const selectedL = locations.find(
-                                                                 (location) =>
-                                                                      location.id ===
-                                                                      parseInt(value),
-                                                            );
-                                                            if (selectedL)
-                                                                 setSelectedLocation(selectedL);
-                                                       }}
-                                                  >
-                                                       <option value="">
-                                                            -- Select Locations --
-                                                       </option>
-                                                       {locations.map((location) => (
-                                                            <option
-                                                                 key={location.id}
-                                                                 value={location.id}
-                                                            >
-                                                                 {location.name}
-                                                            </option>
-                                                       ))}
-                                                  </Input>
-                                                  <Button
-                                                       color="primary"
-                                                       onClick={() =>
-                                                            setLocationModal((prev) => !prev)
-                                                       }
-                                                       className="ml-1 rounded-circle"
-                                                  >
-                                                       <IoMdAdd />
-                                                  </Button>
-                                             </FormGroup>
-                                             <div className="w-100 d-flex align-items-end justify-content-end">
-                                                  <Button
-                                                       color="primary"
-                                                       onClick={handleRoleCreate}
-                                                  >
-                                                       Assign
-                                                  </Button>{" "}
-                                             </div>
-                                        </Row>
-                                   </Form>
-                              </Col>
-                         </Row>
+                         <RolesLocation />
+                    </TabPane>
+                    <TabPane
+                         tabId="tanksLocations"
+                         style={{
+                              width: "100%",
+                         }}
+                    >
+                         <TanksLocation />
                     </TabPane>
                </TabContent>
-               {activeTab !== "roles" && (
+               {activeTab !== "roles" && activeTab !== "tanksLocations" && (
                     <div
                          className="w-100 p-4 "
                          style={{
