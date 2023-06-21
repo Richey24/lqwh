@@ -14,10 +14,11 @@ import {
      ModalBody,
      ModalFooter,
      Button,
+     Spinner,
 } from "reactstrap";
 import { DndProvider, useDrop, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useGetLocations, useGetRoles, useGetUsers } from "../hooks";
+import { useGetLocations, useGetRoles, useGetUsers, useSaveUserRoleLocation } from "../hooks";
 import { toast } from "react-toastify";
 import { Role, User } from "../settings";
 
@@ -67,9 +68,11 @@ export const RolesLocation: React.FC = () => {
      const [users, setUsers] = useState<User[]>([]);
      const [selectedRole, setSelectedRole] = useState<null | Role>();
      const [roles, setRoles] = useState<Role[]>([]);
+     const [roleLoading, setRoleLoading] = useState(false);
 
      const getUsers = useGetUsers();
      const getRoles = useGetRoles();
+     const saveRoleLocations = useSaveUserRoleLocation();
 
      useEffect(() => {
           getLocations(setLocations);
@@ -77,7 +80,7 @@ export const RolesLocation: React.FC = () => {
           getRoles(setRoles);
      }, []);
 
-     console.log(tanks);
+     console.log(tanks, users);
      const AssignedTanksDropZone: React.FC<{ location: Location }> = ({ location }) => {
           //@ts-ignore
           const [{ isOver }, drop] = useDrop<any>(
@@ -107,12 +110,15 @@ export const RolesLocation: React.FC = () => {
                <div
                     ref={drop}
                     style={{
-                         minHeight: "200px",
+                         minHeight: "100px",
                          background: isOver ? "lightblue" : "white",
+                         border: "1px dashed rgb(153 126 183)",
+                         flex: 1,
+                         width: "100%",
                     }}
+                    className="p-2 rounded"
                >
                     {tanks
-                         // .filter((tank) => tank.locationId === selectedLocation?.id)
                          .filter((tank) => {
                               if (tank.users.some((userId) => userId === selectedUser?.id)) {
                                    return tank;
@@ -179,7 +185,9 @@ export const RolesLocation: React.FC = () => {
                     style={{
                          minHeight: "200px",
                          background: isOver ? "lightblue" : "white",
+                         border: "1px dashed rgb(153 126 183)",
                     }}
+                    className="p-2 rounded"
                >
                     {tanks
                          .filter((tank) => tank.locationId === selectedLocation?.id)
@@ -229,11 +237,15 @@ export const RolesLocation: React.FC = () => {
           setIsModalOpen(false);
           // console.log("drop", dropType);
           if (dropType.type === "unassign") {
+               //@ts-ignore
                setTanks((preTanks) => {
                     return preTanks.map((tank) => {
                          if (tank.id === dropType.tank?.id) {
                               return {
                                    ...tank,
+                                   users: tank.users.filter(
+                                        (userId) => userId !== selectedUser?.id,
+                                   ),
                               };
                          } else {
                               return tank;
@@ -277,15 +289,28 @@ export const RolesLocation: React.FC = () => {
 
      const handleSaveRole = () => {
           if (selectedRole) {
-               setSelectedUser((user) => ({ ...user, role: selectedRole?.id || 1 } as User));
-               setUsers((usersT) => {
-                    return usersT.map((user) => {
-                         if (selectedUser && user.id === selectedUser.id) {
-                              return { ...user, role: selectedRole.id };
-                         }
-                         return user;
-                    });
-               });
+               // setSelectedUser((user) => ({ ...user, role: selectedRole?.id || 1 } as User));
+               // setUsers((usersT) => {
+               //      return usersT.map((user) => {
+               //           if (selectedUser && user.id === selectedUser.id) {
+               //                return { ...user, role: selectedRole.id };
+               //           }
+               //           return user;
+               //      });
+               // });
+               if (selectedUser?.id && selectedLocation?.id) {
+                    saveRoleLocations(
+                         {
+                              userId: selectedUser?.id as number,
+                              roleId: selectedRole.id,
+                              locationId: selectedLocation?.id,
+                         },
+                         setRoleLoading,
+                         setUsers,
+                    );
+               } else {
+                    toast.warn("Make Sure The Location Field is Selected");
+               }
           } else {
                toast.warn("Pls, Select a Role");
           }
@@ -339,7 +364,14 @@ export const RolesLocation: React.FC = () => {
                               </DndProvider>
                          )}
                     </Col>
-                    <Col>
+                    <Col
+                         style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "flex-start",
+                              alignItems: "flex-start",
+                         }}
+                    >
                          <div className="mb-2 pb-2 d-flex align-items-end justify-content-end flex-column gap-2 w-100">
                               <Input
                                    type="select"
@@ -371,7 +403,7 @@ export const RolesLocation: React.FC = () => {
                                                   ))}
                                              </Input>
                                              <Button color="primary" onClick={handleSaveRole}>
-                                                  Assign Role
+                                                  {roleLoading ? <Spinner /> : "Assign Role"}
                                              </Button>
                                         </div>
                                    </>

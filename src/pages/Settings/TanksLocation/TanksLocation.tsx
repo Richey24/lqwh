@@ -33,19 +33,6 @@ interface Location {
      //  tanks: Tank[];
 }
 
-// const tanks: Tank[] = [
-//      { id: 1, name: "Tank 1", locationId: 1 },
-//      { id: 2, name: "Tank 2", locationId: 2 },
-//      { id: 3, name: "Tank 3", locationId: 3 },
-//      // Add more tanks as needed
-// ];
-
-// const locations: Location[] = [
-//      { id: 1, name: "Location 1" },
-//      { id: 2, name: "Location 2" },
-//      // Add more locations as needed
-// ];
-
 interface AssignedTankProps {
      tank: Tank;
 }
@@ -111,7 +98,11 @@ export const TanksLocation: React.FC = () => {
                     style={{
                          minHeight: "200px",
                          background: isOver ? "lightblue" : "white",
+                         border: "1px dashed rgb(153 126 183)",
+                         flex: 1,
+                         width: "100%",
                     }}
+                    className="p-2 rounded"
                >
                     {tanks
                          .filter((tank) => tank.locationId === selectedLocation?.id)
@@ -174,7 +165,9 @@ export const TanksLocation: React.FC = () => {
                     style={{
                          minHeight: "200px",
                          background: isOver ? "lightblue" : "white",
+                         border: "1px dashed rgb(153 126 183)",
                     }}
+                    className="p-2 rounded"
                >
                     {tanks
                          .filter((tank) => tank.locationId === 0)
@@ -311,7 +304,14 @@ export const TanksLocation: React.FC = () => {
                               <UnassignedTanksDropZone />
                          </DndProvider>
                     </Col>
-                    <Col>
+                    <Col
+                         style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "flex-start",
+                              alignItems: "flex-start",
+                         }}
+                    >
                          {selectedLocation ? (
                               <h3>Tanks Assigned to {selectedLocation?.name}</h3>
                          ) : (
