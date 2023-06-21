@@ -12,4 +12,6 @@ export interface TankProps {
      threshold: number;
      batchNumber?: number;
      style?: any;
+     locationId?: number;
+     id: number | string;
 }

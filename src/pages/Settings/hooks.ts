@@ -36,6 +36,23 @@ export const useGetLocations = () => {
      };
 };
 
+export const useSaveLocations = () => {
+     return async (locationName: string, onSuccess: () => void, onError: () => void) => {
+          try {
+               const response = await axios.post(
+                    `${baseUrl}/api/Admin/addLocation/${locationName}`,
+               );
+               if (response.status === 200 || response.status === 201) {
+                    onSuccess?.();
+               }
+          } catch (err) {
+               console.log(err);
+               onError();
+               toast.error("Something Went Wrong");
+          }
+     };
+};
+
 export const useGetUsers = () => {
      return async (
           setUsers: React.Dispatch<React.SetStateAction<User[]>>,
