@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-
 import React, { useContext, useEffect, useState } from "react";
 import {
      Container,
@@ -153,19 +152,19 @@ export const Settings: React.FC = () => {
           // console.log("Updated idle screen settings:", idleScreenSettings);
      };
 
-     const handleRoleCreate = (e: React.FormEvent) => {
-          e.preventDefault();
-          // Generate a unique ID for the new role
-          const newRoleId = roles.length > 0 ? roles[roles.length - 1].id + 1 : 1;
-          // Create a new role object
-          const newRole: Role = {
-               id: newRoleId,
-               name: "",
-          };
-          // Add the new role to the state
-          setRoles((prevState) => [...prevState, newRole]);
-          setTab(1);
-     };
+     // const handleRoleCreate = (e: React.FormEvent) => {
+     //      e.preventDefault();
+     //      // Generate a unique ID for the new role
+     //      const newRoleId = roles.length > 0 ? roles[roles.length - 1].id + 1 : 1;
+     //      // Create a new role object
+     //      const newRole: Role = {
+     //           id: newRoleId,
+     //           name: "",
+     //      };
+     //      // Add the new role to the state
+     //      setRoles((prevState) => [...prevState, newRole]);
+     //      setTab(1);
+     // };
 
      const handleDisplay = () => {
           api.start({
