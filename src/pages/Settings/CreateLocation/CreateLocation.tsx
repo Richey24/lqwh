@@ -7,16 +7,22 @@ export const CreateLocationModal = ({ isOpen, toggleModal, onCreateLocation }) =
 
      const handleCreateLocation = async () => {
           setIsLoading(true);
-          // Simulate an asynchronous API call
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          setIsLoading(false);
+          // // Simulate an asynchronous API call
+          // await new Promise((resolve) => setTimeout(resolve, 2000));
+          // setIsLoading(false);
 
           // Call the provided onCreateLocation callback with the location name
-          onCreateLocation(locationName);
-          setLocationName("");
-
-          // Close the modal
-          toggleModal();
+          onCreateLocation(
+               locationName,
+               () => {
+                    setLocationName("");
+                    toggleModal();
+                    setIsLoading(false);
+               },
+               () => {
+                    setIsLoading(false);
+               },
+          );
      };
 
      return (

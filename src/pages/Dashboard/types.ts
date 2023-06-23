@@ -12,4 +12,25 @@ export interface TankProps {
      threshold: number;
      batchNumber?: number;
      style?: any;
+     locationId?: number;
+     id: number | string;
+}
+
+export interface TankConfigurationProps {
+     sysConfigIdx: number;
+     tankIdentifier: string;
+     tankName: string;
+     tankType: number;
+     color: string;
+     pHSetting: number;
+     tempSetting: number;
+     tempThreshold: number;
+     temperatureColor: string;
+     formula: string;
+     locationId: number;
+     location: string;
+     currentFluidLevel: number;
+     maximumFluidLevel: number;
+     isTankOnline: boolean;
+     lastUpdatedBy: string;
 }

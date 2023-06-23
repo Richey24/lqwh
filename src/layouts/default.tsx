@@ -3,7 +3,7 @@ import classes from "./styles.module.css";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../pages/appState";
 import { TankProps } from "../pages/Dashboard/types";
-import { useGetTanks } from "../pages/Dashboard/hooks";
+import { useGetTanks, useGetTanksConfig } from "../pages/Dashboard/hooks";
 import ClickAwayListener from "react-click-away-listener";
 
 const refreshTime = +JSON.parse(localStorage.getItem("polling") as any)?.time * 10000 || 10000;
@@ -15,12 +15,14 @@ export const DefaultLayout = () => {
           setOpen: React.Dispatch<React.SetStateAction<boolean>>;
      }>(AppContext);
      const getTanks = useGetTanks();
+     const getTanksConfig = useGetTanksConfig();
      const navigate = useNavigate();
 
      useEffect(() => {
-          getTanks();
+          // getTanks();
+          getTanksConfig();
           const refreshTanks = setInterval(() => {
-               getTanks();
+               // getTanks();
           }, refreshTime);
 
           return () => {
@@ -33,7 +35,7 @@ export const DefaultLayout = () => {
      };
 
      const handleRefresh = () => {
-          setTanksStore(getTanks());
+          // setTanksStore(getTanks());
      };
 
      return (

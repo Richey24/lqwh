@@ -1,6 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-nocheck
-import React, { useEffect, useState } from "react";
+// //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// //@ts-nocheck
+import React, { useContext, useEffect, useState } from "react";
 import {
      Container,
      Row,
@@ -16,10 +16,12 @@ import {
 } from "reactstrap";
 import { DndProvider, useDrop, useDrag, DragObjectWithType } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useGetLocations } from "../hooks";
+import { useGetLocations, useSaveLocations, useSaveTanksConfiguration } from "../hooks";
 import { toast } from "react-toastify";
 import { CreateLocationModal } from "../CreateLocation/CreateLocation";
 import { IoMdAdd } from "react-icons/io";
+import { AppContext } from "../../appState";
+import { TankProps } from "../../Dashboard/types";
 
 interface Tank {
      id: number;
@@ -34,11 +36,11 @@ interface Location {
 }
 
 interface AssignedTankProps {
-     tank: Tank;
+     tank: TankProps;
 }
 
 interface UnassignedTankProps {
-     tank: Tank;
+     tank: TankProps;
 }
 
 interface DropResult {
@@ -49,20 +51,21 @@ interface DropResult {
 export const TanksLocation: React.FC = () => {
      const [selectedLocation, setSelectedLocation] = useState<null | Location>(null);
      const [locations, setLocations] = useState<Location[]>([]);
-     const [tanks, setTanks] = useState<Tank[]>([
-          { id: 1, name: "Tank 1", locationId: 0 },
-          { id: 2, name: "Tank 2", locationId: 0 },
-          { id: 3, name: "Tank 3", locationId: 0 },
-          // Add more tanks as needed
-     ]);
      const getLocations = useGetLocations();
      const [assignedTanks, setAssignedTanks] = useState<Location[]>(locations);
      const [isModalOpen, setIsModalOpen] = useState(false);
-     const [dropType, setDropType] = useState<{ type: string | null; tank: Tank | null }>({
+     const [dropType, setDropType] = useState<{ type: string | null; tank: TankProps | null }>({
           type: "",
           tank: null,
      });
      const [locationModal, setLocationModal] = useState(false);
+     const [saveLocationLoading, setLocationLoading] = useState(false);
+     const { tanksStore, setTanksStore } = useContext<{
+          tanksStore: TankProps[] | null;
+          setTanksStore: any;
+     }>(AppContext);
+     const saveLocation = useSaveLocations();
+     const saveTanksConfiguration = useSaveTanksConfiguration();
 
      useEffect(() => {
           getLocations(setLocations);
@@ -74,15 +77,17 @@ export const TanksLocation: React.FC = () => {
                     accept: "tank",
                     drop: (item: DropResult) => {
                          //  console.log(item);
-                         const tank = tanks.find((t) => t.id === item.tankId);
-                         //  console.log(item, tank);
-                         if (selectedLocation) {
-                              if (tank) {
-                                   setDropType({ type: "assign", tank });
-                                   setIsModalOpen(true);
+                         if (tanksStore) {
+                              const tank = tanksStore.find((t) => t.id === item.tankId);
+                              //  console.log(item, tank);
+                              if (selectedLocation) {
+                                   if (tank) {
+                                        setDropType({ type: "assign", tank });
+                                        setIsModalOpen(true);
+                                   }
+                              } else {
+                                   toast.error("Pls, Choose a Location");
                               }
-                         } else {
-                              toast.error("Pls, Choose a Location");
                          }
                     },
                     collect: (monitor) => ({
@@ -104,11 +109,13 @@ export const TanksLocation: React.FC = () => {
                     }}
                     className="p-2 rounded"
                >
-                    {tanks
-                         .filter((tank) => tank.locationId === selectedLocation?.id)
-                         .map((tank) => (
-                              <AssignedTank key={tank.id} tank={tank} />
-                         ))}
+                    {tanksStore &&
+                         tanksStore
+                              .filter(
+                                   (tank) =>
+                                        tank.locationId && tank.locationId === selectedLocation?.id,
+                              )
+                              .map((tank) => <AssignedTank key={tank.id} tank={tank} />)}
                </div>
           );
      };
@@ -135,7 +142,7 @@ export const TanksLocation: React.FC = () => {
                     }}
                >
                     <Card>
-                         <CardBody>{tank.name}</CardBody>
+                         <CardBody>{tank.title}</CardBody>
                     </Card>
                </div>
           );
@@ -146,10 +153,12 @@ export const TanksLocation: React.FC = () => {
                () => ({
                     accept: "tank",
                     drop: (item: DropResult) => {
-                         const tank = tanks.find((t) => t.id === item.tankId);
-                         if (tank) {
-                              setIsModalOpen(true);
-                              setDropType({ type: "unassign", tank });
+                         if (tanksStore) {
+                              const tank = tanksStore.find((t) => t.id === item.tankId);
+                              if (tank) {
+                                   setIsModalOpen(true);
+                                   setDropType({ type: "unassign", tank });
+                              }
                          }
                     },
                     collect: (monitor) => ({
@@ -169,11 +178,10 @@ export const TanksLocation: React.FC = () => {
                     }}
                     className="p-2 rounded"
                >
-                    {tanks
-                         .filter((tank) => tank.locationId === 0)
-                         .map((tank) => (
-                              <UnassignedTank key={tank.id} tank={tank} />
-                         ))}
+                    {tanksStore &&
+                         tanksStore
+                              .filter((tank) => !tank.locationId || tank.locationId === 0)
+                              .map((tank) => <UnassignedTank key={tank.id} tank={tank} />)}
                </div>
           );
      };
@@ -201,49 +209,119 @@ export const TanksLocation: React.FC = () => {
                >
                     <Card>
                          <CardBody>
-                              {tank.name}
+                              {tank.title}
                               {/* <button onClick={onAssign}>Assign</button> */}
                          </CardBody>
                     </Card>
                </div>
           );
      };
-
+     console.log(selectedLocation);
      const handleConfirm = () => {
           // Handle confirmed drop action here
-          setIsModalOpen(false);
+          // setIsModalOpen(false);
           if (dropType.type === "unassign") {
-               setTanks((preTanks) => {
-                    return preTanks.map((tank) => {
-                         if (tank.id === dropType.tank?.id) {
-                              return {
-                                   ...tank,
-                                   locationId: 0,
-                              };
-                         } else {
-                              return tank;
-                         }
-                    });
-               });
+               // setTanks((preTanks) => {
+               //      return preTanks.map((tank) => {
+               //           if (tank.id === dropType.tank?.id) {
+               //                return {
+               //                     ...tank,
+               //                     locationId: 0,
+               //                };
+               //           } else {
+               //                return tank;
+               //           }
+               //      });
+               // });
+               setLocationLoading(true);
+               saveTanksConfiguration(
+                    {
+                         sysConfigIdx: 0,
+                         tankIdentifier: "string",
+                         tankName: "string",
+                         tankType: 0,
+                         color: "string",
+                         pHSetting: 0,
+                         tempSetting: 0,
+                         tempThreshold: 0,
+                         temperatureColor: "string",
+                         formula: "string",
+                         locationId: 0,
+                         location: "string",
+                         currentFluidLevel: 0,
+                         maximumFluidLevel: 0,
+                         isTankOnline: true,
+                         lastUpdatedBy: "string",
+                    },
+                    () => {
+                         setLocationLoading(false);
+                    },
+                    () => {
+                         setLocationLoading(false);
+                    },
+               );
           } else if (dropType.type === "assign") {
-               setTanks((preTanks) => {
-                    return preTanks.map((tank) => {
-                         if (tank.id === dropType.tank?.id) {
-                              return {
-                                   ...tank,
-                                   locationId: selectedLocation?.id || 0,
-                              };
-                         } else {
-                              return tank;
-                         }
-                    });
-               });
+               if (dropType.tank) {
+                    const {
+                         color,
+                         temperature,
+                         number,
+                         fillMaxValue,
+                         title,
+                         fillValue,
+                         type,
+                         minimumTemperature,
+                         temperatureMsm,
+                         temperatureColor,
+                         threshold,
+                         batchNumber,
+                    } = dropType.tank;
+                    setLocationLoading(true);
+                    saveTanksConfiguration(
+                         {
+                              sysConfigIdx: 0,
+                              tankIdentifier: title,
+                              tankName: title,
+                              tankType: 0,
+                              color,
+                              pHSetting: 0,
+                              tempSetting: Math.ceil(temperature as number),
+                              tempThreshold: threshold,
+                              temperatureColor: "string",
+                              formula: "string",
+                              locationId: selectedLocation?.id as number,
+                              location: "string",
+                              currentFluidLevel: fillValue,
+                              maximumFluidLevel: fillMaxValue,
+                              isTankOnline: true,
+                              lastUpdatedBy: "string",
+                         },
+                         () => {
+                              setLocationLoading(false);
+                              setIsModalOpen(false);
+                         },
+                         () => {
+                              setLocationLoading(false);
+                         },
+                    );
+               }
           }
      };
 
      const handleCancel = () => {
           // Handle canceled drop action here
           setIsModalOpen(false);
+     };
+
+     const handleCreateLocation = (name, onSuccess, onError) => {
+          saveLocation(
+               name,
+               () => {
+                    onSuccess();
+                    getLocations(setLocations);
+               },
+               onError,
+          );
      };
 
      return (
@@ -257,8 +335,12 @@ export const TanksLocation: React.FC = () => {
                          {dropType.type === "assign" ? "Assign" : "Unassign"} Tank?
                     </ModalBody>
                     <ModalFooter>
-                         <Button color="primary" onClick={handleConfirm}>
-                              Confirm
+                         <Button
+                              color="primary"
+                              disabled={saveLocationLoading}
+                              onClick={handleConfirm}
+                         >
+                              {saveLocationLoading ? "Creating...." : "Confirm"}
                          </Button>
                          <Button color="secondary" onClick={handleCancel}>
                               Cancel
@@ -268,7 +350,7 @@ export const TanksLocation: React.FC = () => {
                <CreateLocationModal
                     isOpen={locationModal}
                     toggleModal={() => setLocationModal((prev) => !prev)}
-                    onCreateLocation={CreateLocationModal}
+                    onCreateLocation={handleCreateLocation}
                />
                <div className="mb-2 pb-2 d-flex align-items-center gap-2 w-100">
                     <Input

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 //@ts-check
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
      Container,
      Row,
@@ -21,6 +21,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useGetLocations, useGetRoles, useGetUsers, useSaveUserRoleLocation } from "../hooks";
 import { toast } from "react-toastify";
 import { Role, User } from "../settings";
+import { AppContext } from "../../appState";
+import { TankProps } from "../../Dashboard/types";
 
 interface Tank {
      id: number;
@@ -57,6 +59,10 @@ export const RolesLocation: React.FC = () => {
           { id: 3, name: "Tank 3", locationId: 1, users: [] },
           // Add more tanks as needed
      ]);
+     const { tanksStore, setTanksStore } = useContext<{
+          tanksStore: TankProps[] | null;
+          setTanksStore: any;
+     }>(AppContext);
      const getLocations = useGetLocations();
      const [assignedTanks, setAssignedTanks] = useState<Location[]>(locations);
      const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,7 +86,7 @@ export const RolesLocation: React.FC = () => {
           getRoles(setRoles);
      }, []);
 
-     console.log(tanks, users);
+     console.log(tanksStore, users);
      const AssignedTanksDropZone: React.FC<{ location: Location }> = ({ location }) => {
           //@ts-ignore
           const [{ isOver }, drop] = useDrop<any>(
