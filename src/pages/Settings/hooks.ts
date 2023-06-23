@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Location, Role, User } from "./settings";
 import { toast } from "react-toastify";
+import { TankConfigurationProps } from "../Dashboard/types";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const useGetRoles = () => {
@@ -96,6 +97,21 @@ export const useSaveUserRoleLocation = () => {
                }
           } catch (err) {
                setLoading(false);
+               console.log(err);
+          }
+     };
+};
+
+export const useSaveTanksConfiguration = () => {
+     return async (body: TankConfigurationProps, onSuccess: () => void, onError: () => void) => {
+          try {
+               const response = await axios.post(`${baseUrl}/api/Tank/AddTankConfig`, body);
+               if (response.status === 200 || response.status === 201) {
+                    console.log("now", response);
+                    onSuccess();
+               }
+          } catch (err) {
+               onError();
                console.log(err);
           }
      };

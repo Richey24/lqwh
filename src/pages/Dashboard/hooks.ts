@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
 import axios from "axios";
-import { TankProps } from "./types";
+import { TankConfigurationProps, TankProps } from "./types";
 import { useContext } from "react";
 import { AppContext } from "../appState";
+import { toast } from "react-toastify";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const useGetTanks = () => {
@@ -11,12 +12,13 @@ export const useGetTanks = () => {
           setTanksStore: any;
      }>(AppContext);
 
-     return async () => {
+     return async (configsData: TankConfigurationProps[]) => {
           try {
                const response = await axios.get(`${baseUrl}/api/tank/gettanks`);
                if (response.status === 200) {
                     const tankKeys = Object.keys(response.data);
                     let tanks: TankProps[] = [];
+                    console.log("we mad it", configsData);
                     tankKeys.forEach((key) => {
                          const names = key.split("_");
                          if (tanks.some((tank) => tank.number === +names[1])) {
@@ -61,6 +63,7 @@ export const useGetTanks = () => {
                                         type: "normal",
                                         number: +names[1],
                                         batchNumber: response.data[key],
+                                        id: 0,
                                    });
                               } else if (names[2] === "Weight") {
                                    tanks.push({
@@ -72,6 +75,7 @@ export const useGetTanks = () => {
                                         type: "normal",
                                         number: +names[1],
                                         batchNumber: 0,
+                                        id: 0,
                                    });
                               } else if (names[2] === "Temp") {
                                    tanks.push({
@@ -87,17 +91,45 @@ export const useGetTanks = () => {
                                         minimumTemperature: 10,
                                         temperatureMsm: "celcius",
                                         temperatureColor: "#DC3545",
+                                        id: 0,
                                    });
                               }
                          }
                     });
                     // .filter((tank) => tank !== undefined);
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    setTanksStore(tanks.filter((tank) => tank.title.split(" ")[1] !== "CIP"));
+                    setTanksStore(
+                         tanks
+                              .filter((tank) => tank.title.split(" ")[1] !== "CIP")
+                              .map((tank) => {
+                                   const config = configsData.find(
+                                        (c) => c.tankIdentifier === tank.title,
+                                   );
+                                   if (config) {
+                                        return { ...tank, locationId: config.locationId };
+                                   }
+                                   return tank;
+                              }),
+                    );
                     // console.log(response.data, tankKeys, tanks);
                }
                // return
           } catch (err) {
+               console.log(err);
+          }
+     };
+};
+
+export const useGetTanksConfig = () => {
+     const getTanks = useGetTanks();
+     return async () => {
+          try {
+               const response = await axios.get(`${baseUrl}/api/tank/gettankconfigurations`);
+               if (response.status === 200) {
+                    getTanks(response.data);
+               }
+          } catch (err) {
+               toast.error("Unable to Fetch Tanks");
                console.log(err);
           }
      };
