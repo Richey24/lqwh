@@ -1,17 +1,15 @@
 import React from "react";
 import { Spinner } from "reactstrap";
-import Lottie from "react-lottie";
 import warehouseAnimation from "../../assets/lotties/warehouse2.json";
+import { useLottie } from "lottie-react";
 
 const LoadingScreen = () => {
-     const lottieOptions = {
-          loop: true,
-          autoplay: true,
+     const options = {
           animationData: warehouseAnimation,
-          rendererSettings: {
-               preserveAspectRatio: "xMidYMid slice",
-          },
+          loop: true,
      };
+
+     const { View } = useLottie(options);
 
      return (
           <div
@@ -29,7 +27,8 @@ const LoadingScreen = () => {
                     justifyContent: "center",
                }}
           >
-               <Lottie options={lottieOptions} height={150} width={150} />
+               {/* <Lottie options={lottieOptions} height={150} width={150} /> */}
+               {View}
           </div>
      );
 };
