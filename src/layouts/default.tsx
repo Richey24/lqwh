@@ -9,10 +9,11 @@ import ClickAwayListener from "react-click-away-listener";
 const refreshTime = +JSON.parse(localStorage.getItem("polling") as any)?.time * 10000 || 10000;
 export const DefaultLayout = () => {
      const [showDropdown, setShowdropdown] = useState(false);
-     const { setTanksStore, setOpen } = useContext<{
+     const { user, setOpen } = useContext<{
           tanksStore: TankProps[] | null;
           setTanksStore: any;
           setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+          user: any;
      }>(AppContext);
      const getTanks = useGetTanks();
      const getTanksConfig = useGetTanksConfig();
@@ -678,13 +679,18 @@ export const DefaultLayout = () => {
                                                   <div className="media mx-auto">
                                                        <div className="emoji me-2">&#x1F44B;</div>
                                                        <div className="media-body">
-                                                            <h5>Shaun Park</h5>
-                                                            <p>Project Leader</p>
+                                                            <h5>{user?.username ?? ""}</h5>
+                                                            <p>{user?.role?.roleName ?? ""}</p>
                                                        </div>
                                                   </div>
                                              </div>
                                              <div className="dropdown-item">
-                                                  <a onClick={() => navigate("/profile")}>
+                                                  <a
+                                                       onClick={() => {
+                                                            toggleShowDropDown();
+                                                            navigate("/profile");
+                                                       }}
+                                                  >
                                                        <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             width="24"
@@ -704,7 +710,7 @@ export const DefaultLayout = () => {
                                                   </a>
                                              </div>
                                              <div className="dropdown-item">
-                                                  <Link to="/settings">
+                                                  <Link to="/settings" onClick={toggleShowDropDown}>
                                                        <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             width="24"
@@ -758,7 +764,13 @@ export const DefaultLayout = () => {
                                                   </a>
                                              </div>
                                              <div className="dropdown-item">
-                                                  <Link to="/auth/login">
+                                                  <a
+                                                       onClick={() => {
+                                                            localStorage.removeItem("token");
+                                                            navigate("/auth/login");
+                                                            toggleShowDropDown();
+                                                       }}
+                                                  >
                                                        <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             width="24"
@@ -781,7 +793,7 @@ export const DefaultLayout = () => {
                                                             ></line>
                                                        </svg>{" "}
                                                        <span>Log Out</span>
-                                                  </Link>
+                                                  </a>
                                              </div>
                                         </div>
                                    </li>

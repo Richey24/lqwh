@@ -1,5 +1,6 @@
 .root {
      width: 200px;
+     max-width: 400px;
      flex: 1;
      min-width: 200px;
      border: 2px solid #fff;

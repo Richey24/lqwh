@@ -64,6 +64,7 @@ export const useGetTanks = () => {
                                         number: +names[1],
                                         batchNumber: response.data[key],
                                         id: 0,
+                                        usersId: [],
                                    });
                               } else if (names[2] === "Weight") {
                                    tanks.push({
@@ -76,6 +77,7 @@ export const useGetTanks = () => {
                                         number: +names[1],
                                         batchNumber: 0,
                                         id: 0,
+                                        usersId: [],
                                    });
                               } else if (names[2] === "Temp") {
                                    tanks.push({
@@ -92,6 +94,7 @@ export const useGetTanks = () => {
                                         temperatureMsm: "celcius",
                                         temperatureColor: "#DC3545",
                                         id: 0,
+                                        usersId: [],
                                    });
                               }
                          }
@@ -106,7 +109,19 @@ export const useGetTanks = () => {
                                         (c) => c.tankIdentifier === tank.title,
                                    );
                                    if (config) {
-                                        return { ...tank, locationId: config.locationId };
+                                        console.log(
+                                             "userId",
+                                             config?.usersId,
+                                             // JSON.parse(`${tank?.usersId}"`),
+                                        );
+                                        return {
+                                             ...tank,
+                                             locationId: config.locationId,
+                                             id: config.sysConfigIdx,
+                                             usersId: config.usersId
+                                                  ? JSON.parse(config?.usersId as string)
+                                                  : [],
+                                        };
                                    }
                                    return tank;
                               }),
