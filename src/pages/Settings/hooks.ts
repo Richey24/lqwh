@@ -2,16 +2,27 @@ import axios from "axios";
 import { Location, Role, User } from "./settings";
 import { toast } from "react-toastify";
 import { TankConfigurationProps } from "../Dashboard/types";
+import { useGetTanksConfig } from "../Dashboard/hooks";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const useGetRoles = () => {
-     return async (setRoles: React.Dispatch<React.SetStateAction<Role[]>>) => {
+     return async (
+          setRoles?: React.Dispatch<React.SetStateAction<Role[]>>,
+          role?: (ro: string) => void,
+          roleId?: number,
+     ) => {
           try {
                const response = await axios.get(`${baseUrl}/api/Admin/GetRoles`);
                if (response.status === 200 || response.status === 201) {
-                    setRoles(
-                         response.data.map((role) => ({ name: role.roleName, id: role.roleId })),
-                    );
+                    setRoles?.(response.data.map((ro) => ({ name: ro.roleName, id: ro.roleId })));
+                    console.log("am here", response.data);
+                    if (role && roleId && response.data) {
+                         response.data.forEach((ro) => {
+                              if (ro.roleId === roleId) {
+                                   role(ro);
+                              }
+                         });
+                    }
                }
           } catch (err) {
                console.log(err);
@@ -103,11 +114,30 @@ export const useSaveUserRoleLocation = () => {
 };
 
 export const useSaveTanksConfiguration = () => {
+     const getTanksConfig = useGetTanksConfig();
+
      return async (body: TankConfigurationProps, onSuccess: () => void, onError: () => void) => {
           try {
                const response = await axios.post(`${baseUrl}/api/Tank/AddTankConfig`, body);
                if (response.status === 200 || response.status === 201) {
-                    console.log("now", response);
+                    getTanksConfig();
+                    onSuccess();
+               }
+          } catch (err) {
+               onError();
+               console.log(err);
+          }
+     };
+};
+
+export const useUpdateTanksConfiguration = () => {
+     const getTanksConfig = useGetTanksConfig();
+
+     return async (body: TankConfigurationProps, onSuccess: () => void, onError: () => void) => {
+          try {
+               const response = await axios.post(`${baseUrl}/api/Tank/updateTankConfig`, body);
+               if (response.status === 200 || response.status === 201) {
+                    getTanksConfig();
                     onSuccess();
                }
           } catch (err) {

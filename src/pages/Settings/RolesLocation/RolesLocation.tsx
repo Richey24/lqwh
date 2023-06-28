@@ -18,7 +18,14 @@ import {
 } from "reactstrap";
 import { DndProvider, useDrop, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useGetLocations, useGetRoles, useGetUsers, useSaveUserRoleLocation } from "../hooks";
+import {
+     useGetLocations,
+     useGetRoles,
+     useGetUsers,
+     useSaveTanksConfiguration,
+     useSaveUserRoleLocation,
+     useUpdateTanksConfiguration,
+} from "../hooks";
 import { toast } from "react-toastify";
 import { Role, User } from "../settings";
 import { AppContext } from "../../appState";
@@ -38,11 +45,11 @@ interface Location {
 }
 
 interface AssignedTankProps {
-     tank: Tank;
+     tank: TankProps;
 }
 
 interface UnassignedTankProps {
-     tank: Tank;
+     tank: TankProps;
 }
 
 interface DropResult {
@@ -66,7 +73,7 @@ export const RolesLocation: React.FC = () => {
      const getLocations = useGetLocations();
      const [assignedTanks, setAssignedTanks] = useState<Location[]>(locations);
      const [isModalOpen, setIsModalOpen] = useState(false);
-     const [dropType, setDropType] = useState<{ type: string | null; tank: Tank | null }>({
+     const [dropType, setDropType] = useState<{ type: string | null; tank: TankProps | null }>({
           type: "",
           tank: null,
      });
@@ -75,10 +82,14 @@ export const RolesLocation: React.FC = () => {
      const [selectedRole, setSelectedRole] = useState<null | Role>();
      const [roles, setRoles] = useState<Role[]>([]);
      const [roleLoading, setRoleLoading] = useState(false);
+     const [saveLocationLoading, setLocationLoading] = useState(false);
+     const [updateRole, setUpdateRole] = useState(false);
 
      const getUsers = useGetUsers();
      const getRoles = useGetRoles();
      const saveRoleLocations = useSaveUserRoleLocation();
+     const saveTanksConfiguration = useSaveTanksConfiguration();
+     const updateTanksConfiguration = useUpdateTanksConfiguration();
 
      useEffect(() => {
           getLocations(setLocations);
@@ -92,17 +103,19 @@ export const RolesLocation: React.FC = () => {
           const [{ isOver }, drop] = useDrop<any>(
                () => ({
                     accept: "tank",
-                    drop: (item: DropResult) => {
+                    drop: (item) => {
                          //  console.log(item);
-                         const tank = tanks.find((t) => t.id === item.tankId);
-                         //  console.log(item, tank);
-                         if (selectedLocation) {
-                              if (tank) {
-                                   setDropType({ type: "assign", tank });
-                                   setIsModalOpen(true);
+                         if (tanksStore) {
+                              const tank = tanksStore.find((t) => t.title === item.title);
+                              console.log(item, tank);
+                              if (selectedLocation) {
+                                   if (tank) {
+                                        setDropType({ type: "assign", tank });
+                                        setIsModalOpen(true);
+                                   }
+                              } else {
+                                   toast.error("Pls, Choose a Location");
                               }
-                         } else {
-                              toast.error("Pls, Choose a Location");
                          }
                     },
                     collect: (monitor) => ({
@@ -124,15 +137,19 @@ export const RolesLocation: React.FC = () => {
                     }}
                     className="p-2 rounded"
                >
-                    {tanks
-                         .filter((tank) => {
-                              if (tank.users.some((userId) => userId === selectedUser?.id)) {
-                                   return tank;
-                              }
-                         })
-                         .map((tank) => (
-                              <AssignedTank key={tank.id} tank={tank} />
-                         ))}
+                    {tanksStore &&
+                         tanksStore
+                              .filter((tank) => {
+                                   if (
+                                        tank?.usersId &&
+                                        (tank?.usersId as number[]).some(
+                                             (userId) => userId === selectedUser?.id,
+                                        )
+                                   ) {
+                                        return tank;
+                                   }
+                              })
+                              .map((tank) => <AssignedTank key={tank.id} tank={tank} />)}
                </div>
           );
      };
@@ -142,7 +159,7 @@ export const RolesLocation: React.FC = () => {
           const [{ isDragging }, drag] = useDrag<unknown>(
                () => ({
                     type: "tank",
-                    item: { tankId: tank.id },
+                    item: { title: tank.title },
                     collect: (monitor) => ({
                          isDragging: !!monitor.isDragging(),
                     }),
@@ -160,7 +177,7 @@ export const RolesLocation: React.FC = () => {
                     }}
                >
                     <Card>
-                         <CardBody>{tank.name}</CardBody>
+                         <CardBody>{tank.title}</CardBody>
                     </Card>
                </div>
           );
@@ -171,11 +188,13 @@ export const RolesLocation: React.FC = () => {
           const [{ isOver }, drop] = useDrop<any>(
                () => ({
                     accept: "tank",
-                    drop: (item: DropResult) => {
-                         const tank = tanks.find((t) => t.id === item.tankId);
-                         if (tank) {
-                              setIsModalOpen(true);
-                              setDropType({ type: "unassign", tank });
+                    drop: (item) => {
+                         if (tanksStore) {
+                              const tank = tanksStore.find((t) => t.title === item.title);
+                              if (tank) {
+                                   setIsModalOpen(true);
+                                   setDropType({ type: "unassign", tank });
+                              }
                          }
                     },
                     collect: (monitor) => ({
@@ -195,16 +214,21 @@ export const RolesLocation: React.FC = () => {
                     }}
                     className="p-2 rounded"
                >
-                    {tanks
-                         .filter((tank) => tank.locationId === selectedLocation?.id)
-                         .filter((tank) => {
-                              if (!tank.users.some((userId) => userId === selectedUser?.id)) {
-                                   return tank;
-                              }
-                         })
-                         .map((tank) => (
-                              <UnassignedTank key={tank.id} tank={tank} />
-                         ))}
+                    {tanksStore &&
+                         tanksStore
+                              .filter((tank) => tank.locationId === selectedLocation?.id)
+                              .filter((tank) => {
+                                   if (
+                                        !tank.usersId ||
+                                        !(tank.usersId as number[]).some(
+                                             (userId) => userId === selectedUser?.id,
+                                        ) ||
+                                        tank.usersId?.length === 0
+                                   ) {
+                                        return tank;
+                                   }
+                              })
+                              .map((tank) => <UnassignedTank key={tank.id} tank={tank} />)}
                </div>
           );
      };
@@ -214,7 +238,7 @@ export const RolesLocation: React.FC = () => {
           const [{ isDragging }, drag] = useDrag<unknown>(
                () => ({
                     type: "tank",
-                    item: { tankId: tank.id },
+                    item: { title: tank.title },
                     collect: (monitor) => ({
                          isDragging: !!monitor.isDragging(),
                     }),
@@ -232,7 +256,7 @@ export const RolesLocation: React.FC = () => {
                     }}
                >
                     <Card>
-                         <CardBody>{tank.name}</CardBody>
+                         <CardBody>{tank.title}</CardBody>
                     </Card>
                </div>
           );
@@ -240,38 +264,148 @@ export const RolesLocation: React.FC = () => {
 
      const handleConfirm = () => {
           // Handle confirmed drop action here
-          setIsModalOpen(false);
-          // console.log("drop", dropType);
+          // setIsModalOpen(true);
           if (dropType.type === "unassign") {
-               //@ts-ignore
-               setTanks((preTanks) => {
-                    return preTanks.map((tank) => {
-                         if (tank.id === dropType.tank?.id) {
-                              return {
-                                   ...tank,
-                                   users: tank.users.filter(
-                                        (userId) => userId !== selectedUser?.id,
+               if (dropType.tank) {
+                    const {
+                         color,
+                         temperature,
+                         number,
+                         fillMaxValue,
+                         title,
+                         fillValue,
+                         type,
+                         minimumTemperature,
+                         temperatureMsm,
+                         temperatureColor,
+                         threshold,
+                         batchNumber,
+                         id,
+                         usersId,
+                         locationId,
+                    } = dropType.tank;
+                    setLocationLoading(true);
+                    updateTanksConfiguration(
+                         {
+                              sysConfigIdx: id,
+                              tankIdentifier: title,
+                              tankName: title,
+                              tankType: 0,
+                              color,
+                              pHSetting: 0,
+                              tempSetting: Math.ceil(temperature as number) || 0,
+                              tempThreshold: threshold,
+                              temperatureColor: "string",
+                              formula: "string",
+                              locationId: locationId as number,
+                              currentFluidLevel: Math.ceil(fillValue),
+                              maximumFluidLevel: fillMaxValue,
+                              isTankOnline: true,
+                              lastUpdatedBy: "string",
+                              location: "",
+                              usersId: JSON.stringify(
+                                   (usersId as number[])?.filter(
+                                        (ids) => +ids !== selectedUser?.id,
                                    ),
-                              };
-                         } else {
-                              return tank;
-                         }
-                    });
-               });
+                              ),
+                         },
+                         () => {
+                              setLocationLoading(false);
+                              setIsModalOpen(false);
+                         },
+                         () => {
+                              setLocationLoading(false);
+                         },
+                    );
+               }
           } else if (dropType.type === "assign") {
-               //@ts-ignore
-               setTanks((preTanks) => {
-                    return preTanks.map((tank) => {
-                         if (tank.id === dropType.tank?.id) {
-                              return {
-                                   ...tank,
-                                   users: [...new Set([...tank.users, selectedUser?.id])],
-                              };
-                         } else {
-                              return tank;
-                         }
-                    });
-               });
+               if (dropType.tank) {
+                    const {
+                         color,
+                         temperature,
+                         number,
+                         fillMaxValue,
+                         title,
+                         fillValue,
+                         type,
+                         minimumTemperature,
+                         temperatureMsm,
+                         temperatureColor,
+                         threshold,
+                         batchNumber,
+                         id,
+                         locationId,
+                         usersId,
+                    } = dropType.tank;
+                    setLocationLoading(true);
+                    if (id !== 0) {
+                         updateTanksConfiguration(
+                              {
+                                   sysConfigIdx: id,
+                                   tankIdentifier: title,
+                                   tankName: title,
+                                   tankType: 0,
+                                   color,
+                                   pHSetting: 0,
+                                   tempSetting: Math.ceil(temperature as number) || 0,
+                                   tempThreshold: threshold,
+                                   temperatureColor: "string",
+                                   formula: "string",
+                                   locationId: locationId as number,
+                                   currentFluidLevel: Math.ceil(fillValue),
+                                   maximumFluidLevel: fillMaxValue,
+                                   isTankOnline: true,
+                                   lastUpdatedBy: "string",
+                                   location: "",
+                                   usersId: JSON.stringify(
+                                        usersId
+                                             ? [...(usersId as number[]), selectedUser?.id]
+                                             : ([selectedUser?.id] as number[]),
+                                   ),
+                              },
+                              () => {
+                                   setLocationLoading(false);
+                                   setIsModalOpen(false);
+                              },
+                              () => {
+                                   setLocationLoading(false);
+                              },
+                         );
+                    } else {
+                         saveTanksConfiguration(
+                              {
+                                   sysConfigIdx: id,
+                                   tankIdentifier: title,
+                                   tankName: title,
+                                   tankType: 0,
+                                   color,
+                                   pHSetting: 0,
+                                   tempSetting: Math.ceil(temperature as number) || 0,
+                                   tempThreshold: threshold,
+                                   temperatureColor: "string",
+                                   formula: "string",
+                                   locationId: locationId as number,
+                                   currentFluidLevel: Math.ceil(fillValue),
+                                   maximumFluidLevel: fillMaxValue,
+                                   isTankOnline: true,
+                                   lastUpdatedBy: "string",
+                                   location: "",
+                                   usersId: JSON.stringify(
+                                        usersId
+                                             ? [...(usersId as number[]), selectedUser?.id]
+                                             : ([selectedUser?.id] as number[]),
+                                   ),
+                              },
+                              () => {
+                                   setLocationLoading(false);
+                                   setIsModalOpen(false);
+                              },
+                              () => {
+                                   setLocationLoading(false);
+                              },
+                         );
+                    }
+               }
           }
      };
 
@@ -295,15 +429,6 @@ export const RolesLocation: React.FC = () => {
 
      const handleSaveRole = () => {
           if (selectedRole) {
-               // setSelectedUser((user) => ({ ...user, role: selectedRole?.id || 1 } as User));
-               // setUsers((usersT) => {
-               //      return usersT.map((user) => {
-               //           if (selectedUser && user.id === selectedUser.id) {
-               //                return { ...user, role: selectedRole.id };
-               //           }
-               //           return user;
-               //      });
-               // });
                if (selectedUser?.id && selectedLocation?.id) {
                     saveRoleLocations(
                          {
@@ -320,6 +445,8 @@ export const RolesLocation: React.FC = () => {
           } else {
                toast.warn("Pls, Select a Role");
           }
+
+          setUpdateRole(false);
      };
 
      return (
@@ -334,7 +461,7 @@ export const RolesLocation: React.FC = () => {
                     </ModalBody>
                     <ModalFooter>
                          <Button color="primary" onClick={handleConfirm}>
-                              Confirm
+                              {saveLocationLoading ? "Dropping..." : "Confirm"}
                          </Button>
                          <Button color="secondary" onClick={handleCancel}>
                               Cancel
@@ -393,7 +520,9 @@ export const RolesLocation: React.FC = () => {
                                         ))}
                               </Input>
 
-                              {selectedUser && (selectedUser?.role === 0 || !selectedUser?.role) ? (
+                              {(selectedUser &&
+                                   (selectedUser?.role === 0 || !selectedUser?.role)) ||
+                              updateRole ? (
                                    <>
                                         <div className="w-75 d-flex align-items-end justify-content-end flex-column gap-2">
                                              <Input
@@ -408,15 +537,38 @@ export const RolesLocation: React.FC = () => {
                                                        </option>
                                                   ))}
                                              </Input>
-                                             <Button color="primary" onClick={handleSaveRole}>
-                                                  {roleLoading ? <Spinner /> : "Assign Role"}
-                                             </Button>
+                                             <div>
+                                                  {updateRole && (
+                                                       <Button
+                                                            color="danger"
+                                                            onClick={() => setUpdateRole(false)}
+                                                            style={{ marginRight: 8 }}
+                                                       >
+                                                            Cancel
+                                                       </Button>
+                                                  )}
+                                                  <Button
+                                                       color="primary"
+                                                       className="ml-1"
+                                                       onClick={handleSaveRole}
+                                                  >
+                                                       {roleLoading ? (
+                                                            <Spinner />
+                                                       ) : updateRole ? (
+                                                            "Update Role"
+                                                       ) : (
+                                                            "Assign Role"
+                                                       )}
+                                                  </Button>
+                                             </div>
                                         </div>
                                    </>
                               ) : (
                                    selectedUser &&
                                    (selectedUser.role || selectedUser.role !== 0) && (
-                                        <Button color="primary">Change Role</Button>
+                                        <Button color="primary" onClick={() => setUpdateRole(true)}>
+                                             Change Role
+                                        </Button>
                                    )
                               )}
                          </div>

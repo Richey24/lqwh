@@ -7,11 +7,13 @@ import { AppContext } from "../appState.tsx";
 
 export const Dashboard = () => {
      const [activeTab, setActiveTab] = useState(1);
-     const { tanksStore } = useContext<{
+     const { tanksStore, user } = useContext<{
           tanksStore: TankProps[] | null;
           setTanksStore: any;
+          user: any;
      }>(AppContext);
 
+     console.log("tanks", tanksStore);
      const handleTab = (value: any) => {
           setActiveTab(value);
      };
@@ -20,7 +22,7 @@ export const Dashboard = () => {
           <div>
                <div className="main-container" id="container">
                     <div id="content" className="main-content">
-                         {tanksStore ? (
+                         {user?.role && tanksStore ? (
                               <div className="middle-content">
                                    <div className="mb-4">
                                         <nav
@@ -70,6 +72,24 @@ export const Dashboard = () => {
                                    {activeTab === 1 ? (
                                         <div className={classes.containerRoot}>
                                              {tanksStore
+                                                  ?.filter((tank) => {
+                                                       if (
+                                                            user?.role &&
+                                                            user.role.roleName !== "Admin"
+                                                       ) {
+                                                            console.log("yes");
+                                                            if (
+                                                                 (tank.usersId as number[])?.some(
+                                                                      (ids) => ids === user.userId,
+                                                                 )
+                                                            ) {
+                                                                 return true;
+                                                            } else {
+                                                                 return false;
+                                                            }
+                                                       }
+                                                       return true;
+                                                  })
                                                   ?.filter((tank) => tank?.type === "normal")
                                                   ?.map((tankProps, idx) => (
                                                        <Tank {...tankProps} key={idx} />
@@ -82,6 +102,26 @@ export const Dashboard = () => {
                                                   style={{ width: "50%" }}
                                              >
                                                   {tanksStore
+                                                       ?.filter((tank) => {
+                                                            if (
+                                                                 user?.role &&
+                                                                 user.role.roleName !== "Admin"
+                                                            ) {
+                                                                 if (
+                                                                      (
+                                                                           tank.usersId as number[]
+                                                                      )?.some(
+                                                                           (ids) =>
+                                                                                ids === user.userId,
+                                                                      )
+                                                                 ) {
+                                                                      return true;
+                                                                 } else {
+                                                                      return false;
+                                                                 }
+                                                            }
+                                                            return true;
+                                                       })
                                                        ?.filter((tank) => tank?.type === "premix")
                                                        ?.map((tankProps, idx) => (
                                                             <Tank {...tankProps} key={idx} />
@@ -92,11 +132,51 @@ export const Dashboard = () => {
                                                   style={{ width: "50%" }}
                                              >
                                                   {tanksStore
+                                                       ?.filter((tank) => {
+                                                            if (
+                                                                 user?.role &&
+                                                                 user.role.roleName !== "Admin"
+                                                            ) {
+                                                                 if (
+                                                                      (
+                                                                           tank.usersId as number[]
+                                                                      )?.some(
+                                                                           (ids) =>
+                                                                                ids === user.userId,
+                                                                      )
+                                                                 ) {
+                                                                      return true;
+                                                                 } else {
+                                                                      return false;
+                                                                 }
+                                                            }
+                                                            return true;
+                                                       })
                                                        ?.filter((tank) => tank?.type === "HotWater")
                                                        ?.map((tankProps, idx) => (
                                                             <Tank {...tankProps} key={idx} />
                                                        ))}
                                                   {tanksStore
+                                                       ?.filter((tank) => {
+                                                            if (
+                                                                 user?.role &&
+                                                                 user.role.roleName !== "Admin"
+                                                            ) {
+                                                                 if (
+                                                                      (
+                                                                           tank.usersId as number[]
+                                                                      )?.some(
+                                                                           (ids) =>
+                                                                                ids === user.userId,
+                                                                      )
+                                                                 ) {
+                                                                      return true;
+                                                                 } else {
+                                                                      return false;
+                                                                 }
+                                                            }
+                                                            return true;
+                                                       })
                                                        ?.filter((tank) => tank?.type === "mix")
                                                        ?.map((tankProps, idx) => (
                                                             <Tank {...tankProps} key={idx} />

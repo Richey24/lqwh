@@ -144,7 +144,7 @@ export const Register = () => {
                          email,
                          password,
                          userName,
-                         role: "client",
+                         roleId: 1,
                     },
                     () => {
                          setFormState((prevState) => ({

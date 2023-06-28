@@ -27,7 +27,6 @@ import { RolesLocation } from "./RolesLocation/RolesLocation";
 interface ProfileData {
      name: string;
      email: string;
-     password: string;
      image: string | null;
 }
 
@@ -53,7 +52,7 @@ export interface Location {
 }
 
 export interface User {
-     id: number | string;
+     id: number;
      name: string;
      email: string;
      role: number | null;
@@ -68,7 +67,6 @@ export const Settings: React.FC = () => {
      const [profile, setProfile] = useState<ProfileData>({
           name: "",
           email: "",
-          password: "",
           image: null,
      });
      const [polling, setPolling] = useState<any>({
@@ -78,9 +76,10 @@ export const Settings: React.FC = () => {
           enabled: false,
           idleTime: 0,
      });
-     const { tanksStore, setTanksStore } = useContext<{
+     const { tanksStore, user } = useContext<{
           tanksStore: TankProps[] | null;
           setTanksStore: any;
+          user: any;
      }>(AppContext);
      const [roles, setRoles] = useState<Role[]>([]);
      const [tab, setTab] = useState(0);
@@ -96,6 +95,14 @@ export const Settings: React.FC = () => {
      useEffect(() => {
           getRoles(setRoles);
      }, []);
+
+     useEffect(() => {
+          if (user) {
+               setProfile(() => {
+                    return { name: user.username, email: user.email, image: user.email ?? "" };
+               });
+          }
+     }, [user]);
 
      const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>) => {
           const { name, value, files } = e.target;
@@ -192,14 +199,16 @@ export const Settings: React.FC = () => {
                               Profile
                          </NavLink>
                     </NavItem>
-                    <NavItem>
-                         <NavLink
-                              className={activeTab === "tanks" ? "active" : ""}
-                              onClick={() => toggleTab("tanks")}
-                         >
-                              Tanks Configuration
-                         </NavLink>
-                    </NavItem>
+                    {user?.role?.roleName === "Blending Manager" && (
+                         <NavItem>
+                              <NavLink
+                                   className={activeTab === "tanks" ? "active" : ""}
+                                   onClick={() => toggleTab("tanks")}
+                              >
+                                   Tanks Configuration
+                              </NavLink>
+                         </NavItem>
+                    )}
                     <NavItem>
                          <NavLink
                               className={activeTab === "idleScreen" ? "active" : ""}
@@ -216,22 +225,26 @@ export const Settings: React.FC = () => {
                               Polling
                          </NavLink>
                     </NavItem>
-                    <NavItem>
-                         <NavLink
-                              className={activeTab === "roles" ? "active" : ""}
-                              onClick={() => toggleTab("roles")}
-                         >
-                              Roles & Locations
-                         </NavLink>
-                    </NavItem>
-                    <NavItem>
-                         <NavLink
-                              className={activeTab === "tanksLocations" ? "active" : ""}
-                              onClick={() => toggleTab("tanksLocations")}
-                         >
-                              Tanks & Locations
-                         </NavLink>
-                    </NavItem>
+                    {user?.role?.roleName == "Admin" && (
+                         <NavItem>
+                              <NavLink
+                                   className={activeTab === "roles" ? "active" : ""}
+                                   onClick={() => toggleTab("roles")}
+                              >
+                                   Roles & Locations
+                              </NavLink>
+                         </NavItem>
+                    )}
+                    {user?.role?.roleName == "Admin" && (
+                         <NavItem>
+                              <NavLink
+                                   className={activeTab === "tanksLocations" ? "active" : ""}
+                                   onClick={() => toggleTab("tanksLocations")}
+                              >
+                                   Tanks & Locations
+                              </NavLink>
+                         </NavItem>
+                    )}
                </Nav>
                <TabContent
                     activeTab={activeTab}
@@ -300,7 +313,7 @@ export const Settings: React.FC = () => {
                                                   required
                                              />
                                         </FormGroup>
-                                        <FormGroup>
+                                        {/* <FormGroup>
                                              <Label for="password">Password</Label>
                                              <Input
                                                   type="password"
@@ -310,7 +323,7 @@ export const Settings: React.FC = () => {
                                                   onChange={handleProfileChange}
                                                   required
                                              />
-                                        </FormGroup>
+                                        </FormGroup> */}
                                    </Form>
                               </Col>
                          </Row>

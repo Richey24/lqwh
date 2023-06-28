@@ -13,7 +13,8 @@ export interface TankProps {
      batchNumber?: number;
      style?: any;
      locationId?: number;
-     id: number | string;
+     id: number;
+     usersId: number[] | string | null;
 }
 
 export interface TankConfigurationProps {
@@ -33,4 +34,5 @@ export interface TankConfigurationProps {
      maximumFluidLevel: number;
      isTankOnline: boolean;
      lastUpdatedBy: string;
+     usersId: number[] | string | null;
 }
