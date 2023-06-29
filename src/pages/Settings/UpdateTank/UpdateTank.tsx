@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
-export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
+export const TankUpdateForm = ({
+     tanks,
+     setActiveTank,
+     handleDisplay,
+     updatedDetails,
+     setUpdatedDetails,
+}) => {
      const [selectedTank, setSelectedTank] = useState("");
-     const [updatedDetails, setUpdatedDetails] = useState<any>({});
-
-     // console.log("details", updatedDetails);
 
      const handleTankSelection = (event) => {
-          const tankId = JSON.parse(event.target.value);
-          setSelectedTank(tankId);
-          setUpdatedDetails(tankId);
-          setActiveTank(tankId);
+          const tank = JSON.parse(event.target.value);
+          console.log(tank);
+          setSelectedTank(tank);
+          setUpdatedDetails(tank);
+          setActiveTank(tank);
           handleDisplay();
      };
 
@@ -26,7 +30,6 @@ export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
 
      const handleSubmit = (event) => {
           event.preventDefault();
-          // console.log("Updated Tank Details:", updatedDetails);
      };
 
      return (
@@ -59,6 +62,7 @@ export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
                                         type="text"
                                         name="batchNumber"
                                         id="batchNumber"
+                                        disabled={true}
                                         onChange={handleInputChange}
                                         value={updatedDetails?.batchNumber || ""}
                                    />
@@ -69,8 +73,20 @@ export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
                                         type="text"
                                         name="fillValue"
                                         id="fillValue"
+                                        disabled={true}
                                         onChange={handleInputChange}
                                         value={updatedDetails?.fillValue || ""}
+                                   />
+                              </FormGroup>
+                              <FormGroup>
+                                   <Label for="fillValue">Tank Capacity (kg):</Label>
+                                   <Input
+                                        type="text"
+                                        name="fillMaxValue"
+                                        id="fillMaxValue"
+                                        disabled={true}
+                                        onChange={handleInputChange}
+                                        value={updatedDetails?.fillMaxValue || ""}
                                    />
                               </FormGroup>
                               <FormGroup>
@@ -79,10 +95,23 @@ export const TankUpdateForm = ({ tanks, setActiveTank, handleDisplay }) => {
                                         type="text"
                                         name="temperature"
                                         id="temperature"
+                                        disabled={true}
                                         onChange={handleInputChange}
                                         value={updatedDetails?.temperature || ""}
                                    />
                               </FormGroup>{" "}
+                              {updatedDetails?.temperature && (
+                                   <FormGroup>
+                                        <Label for="temperature">Temperature Threshold:</Label>
+                                        <Input
+                                             type="text"
+                                             name="minimumTemperature"
+                                             id="minimumTemperature"
+                                             onChange={handleInputChange}
+                                             value={updatedDetails?.minimumTemperature || ""}
+                                        />
+                                   </FormGroup>
+                              )}{" "}
                               <FormGroup>
                                    <Label for="formula">Formula:</Label>
                                    <Input

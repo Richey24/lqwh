@@ -18,7 +18,6 @@ export const AppState = ({ children }: { children: React.ReactChild }) => {
      const getMe = useGetMe();
      const getRoles = useGetRoles();
 
-     console.log("new user", user);
      const onIdle = () => {
           setOpen(true);
      };
@@ -42,7 +41,7 @@ export const AppState = ({ children }: { children: React.ReactChild }) => {
      });
 
      return (
-          <AppContext.Provider value={{ tanksStore, setTanksStore, open, setOpen, user }}>
+          <AppContext.Provider value={{ tanksStore, setTanksStore, open, setOpen, user, setUser }}>
                <Lockscreen />
                {loading && <LoadingScreen />}
                {children}

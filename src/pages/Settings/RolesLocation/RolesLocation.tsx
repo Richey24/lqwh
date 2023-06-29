@@ -60,15 +60,9 @@ interface DropResult {
 export const RolesLocation: React.FC = () => {
      const [selectedLocation, setSelectedLocation] = useState<null | Location>(null);
      const [locations, setLocations] = useState<Location[]>([]);
-     const [tanks, setTanks] = useState<Tank[]>([
-          { id: 1, name: "Tank 1", locationId: 1, users: [] },
-          { id: 2, name: "Tank 2", locationId: 2, users: [] },
-          { id: 3, name: "Tank 3", locationId: 1, users: [] },
-          // Add more tanks as needed
-     ]);
-     const { tanksStore, setTanksStore } = useContext<{
+     const { tanksStore, user } = useContext<{
           tanksStore: TankProps[] | null;
-          setTanksStore: any;
+          user: any;
      }>(AppContext);
      const getLocations = useGetLocations();
      const [assignedTanks, setAssignedTanks] = useState<Location[]>(locations);
@@ -97,17 +91,14 @@ export const RolesLocation: React.FC = () => {
           getRoles(setRoles);
      }, []);
 
-     console.log(tanksStore, users);
      const AssignedTanksDropZone: React.FC<{ location: Location }> = ({ location }) => {
           //@ts-ignore
           const [{ isOver }, drop] = useDrop<any>(
                () => ({
                     accept: "tank",
                     drop: (item) => {
-                         //  console.log(item);
                          if (tanksStore) {
                               const tank = tanksStore.find((t) => t.title === item.title);
-                              console.log(item, tank);
                               if (selectedLocation) {
                                    if (tank) {
                                         setDropType({ type: "assign", tank });
@@ -513,11 +504,13 @@ export const RolesLocation: React.FC = () => {
                               >
                                    <option value="">-- Select User --</option>
                                    {users &&
-                                        users?.map((user) => (
-                                             <option key={user.id} value={user.id}>
-                                                  {user.name}
-                                             </option>
-                                        ))}
+                                        users
+                                             ?.filter((userM) => userM.id !== user?.userId)
+                                             ?.map((user) => (
+                                                  <option key={user.id} value={user.id}>
+                                                       {user.name}
+                                                  </option>
+                                             ))}
                               </Input>
 
                               {(selectedUser &&
