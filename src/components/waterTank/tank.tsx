@@ -43,7 +43,7 @@ const Tank: FC<TankProps> = ({
                               fillPadding: null, // gap between perimeter and inside tank area that displays water.
                               borderWidth: 2, // perimeter width.
                               borderColor: "#", // outside border color. usually the perimeter of the tank
-                              defaultFillColor: isTemperatureLow() ? temperatureColor : color, // default water color. this is assigned to fillColor if water level does not pass any thresholds.
+                              defaultFillColor: isTemperatureLow() ? "#DC3545" : color, // default water color. this is assigned to fillColor if water level does not pass any thresholds.
                               fillColor: null, // used later to set water color. it could be different color depending on situations.
                               backFillColor: "#fafafa", // background color inside the tank where there is no water.
                               backFillOpacity: 1, // opacity of the background.
@@ -2053,15 +2053,6 @@ const Tank: FC<TankProps> = ({
           }
      }, []);
 
-     const isTemperatureLow = () => {
-          if (temperature && minimumTemperature) {
-               if (temperature < minimumTemperature) {
-                    return true;
-               }
-          }
-          return false;
-     };
-
      useEffect(() => {
           if (tankRef?.current) {
                tankRef?.current.updateHeight(fillValue);
@@ -2069,6 +2060,14 @@ const Tank: FC<TankProps> = ({
           }
      }, [fillValue]);
 
+     const isTemperatureLow = () => {
+          if (temperature && minimumTemperature) {
+               if (temperature < +minimumTemperature) {
+                    return true;
+               }
+          }
+          return false;
+     };
      return (
           <div className={`text-center ${classes.root}`} style={style ? style : {}}>
                <div id="empty-space"></div>
@@ -2105,7 +2104,7 @@ const Tank: FC<TankProps> = ({
                     <span>{temperature}</span>
                     <span>{temperatureMsm}</span>
                </div>
-               {type !== "normal" && fillValue < threshold && (
+               {type !== "normal" && isTemperatureLow() && (
                     <div className={classes.temperature}>
                          Temperature is Low <AiFillWarning />{" "}
                     </div>

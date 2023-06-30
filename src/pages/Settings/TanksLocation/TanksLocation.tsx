@@ -240,6 +240,7 @@ export const TanksLocation: React.FC = () => {
                          threshold,
                          batchNumber,
                          id,
+                         formula,
                     } = dropType.tank;
                     setLocationLoading(true);
                     updateTanksConfiguration(
@@ -251,9 +252,9 @@ export const TanksLocation: React.FC = () => {
                               color,
                               pHSetting: 0,
                               tempSetting: Math.ceil(temperature as number) || 0,
-                              tempThreshold: threshold,
+                              tempThreshold: minimumTemperature ?? 0,
                               temperatureColor: "string",
-                              formula: "string",
+                              formula: formula ?? "string",
                               locationId: 0,
                               currentFluidLevel: Math.ceil(fillValue),
                               maximumFluidLevel: fillMaxValue,
@@ -285,6 +286,7 @@ export const TanksLocation: React.FC = () => {
                          threshold,
                          batchNumber,
                          id,
+                         formula,
                     } = dropType.tank;
                     setLocationLoading(true);
                     if (id !== 0) {
@@ -297,9 +299,9 @@ export const TanksLocation: React.FC = () => {
                                    color,
                                    pHSetting: 0,
                                    tempSetting: Math.ceil(temperature as number) || 0,
-                                   tempThreshold: threshold,
+                                   tempThreshold: minimumTemperature ?? 0,
                                    temperatureColor: "string",
-                                   formula: "string",
+                                   formula: formula ?? "string",
                                    locationId: selectedLocation?.id as number,
                                    currentFluidLevel: Math.ceil(fillValue),
                                    maximumFluidLevel: fillMaxValue,
@@ -324,9 +326,9 @@ export const TanksLocation: React.FC = () => {
                                    color,
                                    pHSetting: 0,
                                    tempSetting: Math.ceil(temperature as number) || 0,
-                                   tempThreshold: threshold,
+                                   tempThreshold: minimumTemperature ?? 0,
                                    temperatureColor: "string",
-                                   formula: "string",
+                                   formula: formula ?? "string",
                                    locationId: selectedLocation?.id as number,
                                    currentFluidLevel: Math.ceil(fillValue),
                                    maximumFluidLevel: fillMaxValue,

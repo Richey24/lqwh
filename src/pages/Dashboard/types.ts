@@ -15,6 +15,7 @@ export interface TankProps {
      locationId?: number;
      id: number;
      usersId: number[] | string | null;
+     fomula: string;
 }
 
 export interface TankConfigurationProps {

@@ -14,6 +14,7 @@ import {
      Label,
      Input,
      Form,
+     Spinner,
 } from "reactstrap";
 import { TankUpdateForm } from "./UpdateTank/UpdateTank";
 import { AppContext } from "../appState";
@@ -109,6 +110,12 @@ export const Settings: React.FC = () => {
      }, []);
 
      useEffect(() => {
+          if (activeTab === "tanks" && activeTank) {
+               setActiveTank(tanksStore?.find((tankS) => tankS.id === activeTank.id));
+          }
+     }, [tanksStore]);
+
+     useEffect(() => {
           if (user) {
                setProfile(() => {
                     return { name: user.username, email: user.email, image: user.email ?? "" };
@@ -171,6 +178,7 @@ export const Settings: React.FC = () => {
                );
           }
           if (activeTab === "tanks") {
+               setActiveTank(null);
                if (Object.keys(updatedDetails).length !== 0) {
                     const {
                          color,
@@ -206,7 +214,7 @@ export const Settings: React.FC = () => {
                                    formula: formula || "string",
                                    locationId,
                                    currentFluidLevel: Math.ceil(fillValue),
-                                   maximumFluidLevel: fillMaxValue,
+                                   maximumFluidLevel: fillMaxValue || 0,
                                    isTankOnline: true,
                                    lastUpdatedBy: "string",
                                    usersId: JSON.stringify(usersId),
@@ -214,9 +222,15 @@ export const Settings: React.FC = () => {
                               },
                               () => {
                                    setSettingsLoading(false);
+                                   setActiveTank(
+                                        tanksStore?.find((tankS) => tankS.id === activeTank.id),
+                                   );
                                    toast.success("You Successfully updated the tank Information");
                               },
                               () => {
+                                   setActiveTank(
+                                        tanksStore?.find((tankS) => tankS.id === activeTank.id),
+                                   );
                                    setSettingsLoading(false);
                                    toast.error("Something Went Wrong");
                               },
@@ -236,7 +250,7 @@ export const Settings: React.FC = () => {
                                    formula: formula || "string",
                                    locationId,
                                    currentFluidLevel: Math.ceil(fillValue),
-                                   maximumFluidLevel: +fillMaxValue,
+                                   maximumFluidLevel: +fillMaxValue || 0,
                                    isTankOnline: true,
                                    lastUpdatedBy: "string",
                                    usersId: JSON.stringify(usersId),
@@ -244,9 +258,15 @@ export const Settings: React.FC = () => {
                               },
                               () => {
                                    setSettingsLoading(false);
+                                   setActiveTank(
+                                        tanksStore?.find((tankS) => tankS.id === activeTank.id),
+                                   );
                                    toast.success("You Successfully updated the tank Information");
                               },
                               () => {
+                                   setActiveTank(
+                                        tanksStore?.find((tankS) => tankS.id === activeTank.id),
+                                   );
                                    setSettingsLoading(false);
                                    toast.error("Something Went Wrong");
                               },
@@ -384,7 +404,15 @@ export const Settings: React.FC = () => {
                                                        />
                                                   </div>
                                              )}
-                                             <div>
+                                             <div
+                                                  style={{
+                                                       display: "flex",
+                                                       justifyContent: "flex-end",
+                                                       alignItems: "flex-end",
+                                                       flexDirection: "column",
+                                                       gap: 8,
+                                                  }}
+                                             >
                                                   <Input
                                                        type="file"
                                                        name="image"
@@ -392,7 +420,11 @@ export const Settings: React.FC = () => {
                                                        onChange={handleProfileChange}
                                                        accept="image/*"
                                                   />
-                                                  <Button onClick={handleSaveAvatar}>Save</Button>
+                                                  {avatarFile && (
+                                                       <Button onClick={handleSaveAvatar}>
+                                                            Save
+                                                       </Button>
+                                                  )}
                                              </div>
                                         </FormGroup>
                                         <FormGroup>
@@ -458,11 +490,13 @@ export const Settings: React.FC = () => {
                                              ...springs,
                                         }}
                                    >
-                                        {activeTank && (
+                                        {activeTank && !settingsLoading ? (
                                              <Tank
                                                   {...(activeTank as TankProps)}
                                                   style={{ width: "100%", maxWidth: 350 }}
                                              />
+                                        ) : (
+                                             <Spinner />
                                         )}
                                    </animated.div>
                               </Col>

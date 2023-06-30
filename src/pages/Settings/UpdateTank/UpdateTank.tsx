@@ -12,7 +12,6 @@ export const TankUpdateForm = ({
 
      const handleTankSelection = (event) => {
           const tank = JSON.parse(event.target.value);
-          console.log(tank);
           setSelectedTank(tank);
           setUpdatedDetails(tank);
           setActiveTank(tank);
@@ -84,7 +83,7 @@ export const TankUpdateForm = ({
                                         type="text"
                                         name="fillMaxValue"
                                         id="fillMaxValue"
-                                        disabled={true}
+                                        // disabled={true}
                                         onChange={handleInputChange}
                                         value={updatedDetails?.fillMaxValue || ""}
                                    />
