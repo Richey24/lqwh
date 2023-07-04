@@ -4,6 +4,7 @@ import { useIdleTimer } from "react-idle-timer";
 import { useGetMe } from "./hooks";
 import LoadingScreen from "../components/LoadingScreen/LoadingScreen";
 import { useGetRoles } from "./Settings/hooks";
+import BatchView from "../components/BatchCheck/BatchCheck";
 
 export const AppContext = createContext<any>(null);
 
@@ -13,6 +14,7 @@ export const AppState = ({ children }: { children: React.ReactChild }) => {
      const [tanksStore, setTanksStore] = useState(null);
      const [open, setOpen] = useState(false);
      const [loading, setLoading] = useState(false);
+     const [openModal, setOpenModal] = useState(false);
      const [user, setUser] = useState<any>(null);
 
      const getMe = useGetMe();
@@ -40,9 +42,24 @@ export const AppState = ({ children }: { children: React.ReactChild }) => {
           throttle: 500,
      });
 
+     const toggleModal = () => {
+          setOpenModal((prev) => !prev);
+     };
+
      return (
-          <AppContext.Provider value={{ tanksStore, setTanksStore, open, setOpen, user, setUser }}>
+          <AppContext.Provider
+               value={{
+                    tanksStore,
+                    setTanksStore,
+                    open,
+                    setOpen,
+                    user,
+                    setUser,
+                    toggleBatchViewModal: toggleModal,
+               }}
+          >
                <Lockscreen />
+               <BatchView open={openModal} toggleModal={toggleModal} />
                {loading && <LoadingScreen />}
                {children}
           </AppContext.Provider>

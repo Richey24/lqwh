@@ -9,11 +9,12 @@ import ClickAwayListener from "react-click-away-listener";
 const refreshTime = +JSON.parse(localStorage.getItem("polling") as any)?.time * 10000 || 10000;
 export const DefaultLayout = () => {
      const [showDropdown, setShowdropdown] = useState(false);
-     const { user, setOpen } = useContext<{
+     const { user, setOpen, toggleBatchViewModal } = useContext<{
           tanksStore: TankProps[] | null;
           setTanksStore: any;
           setOpen: React.Dispatch<React.SetStateAction<boolean>>;
           user: any;
+          toggleBatchViewModal: () => void;
      }>(AppContext);
      const getTanks = useGetTanks();
      const getTanksConfig = useGetTanksConfig();
@@ -36,7 +37,7 @@ export const DefaultLayout = () => {
      };
 
      const handleBatchSearch = () => {
-          navigate("/batch-view");
+          toggleBatchViewModal();
      };
 
      const handleRefresh = () => {

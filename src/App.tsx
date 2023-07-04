@@ -13,7 +13,7 @@ import { AppState } from "./pages/appState";
 import { Profile } from "./pages/Profile/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { Register } from "./pages/Auth/Register/Register";
-import BatchView from "./pages/BatchCheck/BatchCheck";
+import BatchHistory from "./pages/BatchHistory/BatchHistory";
 //@ts-ignore
 window.$ = window.jQuery = $;
 
@@ -32,7 +32,7 @@ function App() {
                          <Route path="/" element={<Dashboard />} />
                          <Route path="settings" element={<Settings />} />
                          <Route path="profile" element={<Profile />} />
-                         <Route path="batch-view" element={<BatchView />} />
+                         <Route path="batch-history" element={<BatchHistory />} />
                     </Route>
                     <Route path="/auth" element={<Auth />}>
                          <Route path="lockscreen" element={<Lockscreen />} />
