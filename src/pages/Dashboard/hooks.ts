@@ -18,7 +18,7 @@ export const useGetTanks = () => {
                if (response.status === 200) {
                     const tankKeys = Object.keys(response.data);
                     let tanks: TankProps[] = [];
-                    console.log("we mad it", configsData);
+
                     tankKeys.forEach((key) => {
                          const names = key.split("_");
                          if (tanks.some((tank) => tank.number === +names[1])) {
@@ -109,24 +109,20 @@ export const useGetTanks = () => {
                                         (c) => c.tankIdentifier === tank.title,
                                    );
                                    if (config) {
-                                        console.log(
-                                             "userId",
-                                             config?.usersId,
-                                             // JSON.parse(`${tank?.usersId}"`),
-                                        );
                                         return {
                                              ...tank,
                                              locationId: config.locationId,
                                              id: config.sysConfigIdx,
+                                             minimumTemperature: config.tempThreshold,
                                              usersId: config.usersId
                                                   ? JSON.parse(config?.usersId as string)
                                                   : [],
+                                             fillMaxValue: config.maximumFluidLevel,
                                         };
                                    }
                                    return tank;
                               }),
                     );
-                    // console.log(response.data, tankKeys, tanks);
                }
                // return
           } catch (err) {

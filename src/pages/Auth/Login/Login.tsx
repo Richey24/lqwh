@@ -83,7 +83,7 @@ export const Login = () => {
                               ...prevState,
                               loading: false,
                          }));
-                         navigate("/");
+                         window.location.assign(location.origin);
                     },
                     (formError) => {
                          setFormState((prevState) => ({

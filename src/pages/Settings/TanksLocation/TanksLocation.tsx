@@ -82,10 +82,8 @@ export const TanksLocation: React.FC = () => {
                () => ({
                     accept: "tank",
                     drop: (item: DropResult) => {
-                         //  console.log(item);
                          if (tanksStore) {
                               const tank = tanksStore.find((t) => t.title === item.title);
-                              //  console.log(item, tank);
                               if (selectedLocation) {
                                    if (tank) {
                                         setDropType({ type: "assign", tank });

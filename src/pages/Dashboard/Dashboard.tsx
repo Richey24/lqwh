@@ -13,7 +13,6 @@ export const Dashboard = () => {
           user: any;
      }>(AppContext);
 
-     console.log("tanks", tanksStore);
      const handleTab = (value: any) => {
           setActiveTab(value);
      };
@@ -77,7 +76,6 @@ export const Dashboard = () => {
                                                             user?.role &&
                                                             user.role.roleName !== "Admin"
                                                        ) {
-                                                            console.log("yes");
                                                             if (
                                                                  (tank.usersId as number[])?.some(
                                                                       (ids) => ids === user.userId,

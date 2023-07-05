@@ -3,6 +3,9 @@ import { Location, Role, User } from "./settings";
 import { toast } from "react-toastify";
 import { TankConfigurationProps } from "../Dashboard/types";
 import { useGetTanksConfig } from "../Dashboard/hooks";
+import { AppContext } from "../appState";
+import { useContext } from "react";
+import { useGetMe } from "../hooks";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const useGetRoles = () => {
@@ -15,7 +18,6 @@ export const useGetRoles = () => {
                const response = await axios.get(`${baseUrl}/api/Admin/GetRoles`);
                if (response.status === 200 || response.status === 201) {
                     setRoles?.(response.data.map((ro) => ({ name: ro.roleName, id: ro.roleId })));
-                    console.log("am here", response.data);
                     if (role && roleId && response.data) {
                          response.data.forEach((ro) => {
                               if (ro.roleId === roleId) {
@@ -73,7 +75,6 @@ export const useGetUsers = () => {
           try {
                const response = await axios.get(`${baseUrl}/api/Admin/getusers`);
                if (response.status === 200 || response.status === 201) {
-                    console.log("now", response);
                     setUsers(
                          response.data.map((user) => ({
                               name: user.username,
@@ -85,6 +86,38 @@ export const useGetUsers = () => {
                     setLoading?.(false);
                }
           } catch (err) {
+               console.log(err);
+          }
+     };
+};
+
+export const useUpdateUserProfile = () => {
+     const { setUser } = useContext<{
+          setUser: React.Dispatch<any>;
+     }>(AppContext);
+     const getMe = useGetMe();
+
+     return async (
+          body: {
+               userId: number;
+               username: string;
+               email: string;
+               image: string;
+          },
+          setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+     ) => {
+          try {
+               setLoading(true);
+               const response = await axios.post(`${baseUrl}/api/Admin/UpdateUserProfile`, body);
+               if (response.data) {
+                    toast.success("Profile Updated");
+                    getMe(setUser, setLoading);
+               } else {
+                    setLoading(false);
+               }
+          } catch (err) {
+               toast.error("Something Went Wrong");
+               setLoading(false);
                console.log(err);
           }
      };

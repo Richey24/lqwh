@@ -20,9 +20,17 @@ import { AppContext } from "../appState";
 import { TankProps } from "../Dashboard/types";
 import Tank from "../../components/waterTank/tank";
 import { useSpring, animated } from "@react-spring/web";
-import { useGetRoles } from "./hooks";
+import {
+     useGetRoles,
+     useSaveTanksConfiguration,
+     useUpdateTanksConfiguration,
+     useUpdateUserProfile,
+} from "./hooks";
 import { TanksLocation } from "./TanksLocation/TanksLocation";
 import { RolesLocation } from "./RolesLocation/RolesLocation";
+import { toast } from "react-toastify";
+import axios from "axios";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 interface ProfileData {
      name: string;
@@ -82,8 +90,12 @@ export const Settings: React.FC = () => {
           user: any;
      }>(AppContext);
      const [roles, setRoles] = useState<Role[]>([]);
-     const [tab, setTab] = useState(0);
-
+     const [settingsLoading, setSettingsLoading] = useState(false);
+     const [updatedDetails, setUpdatedDetails] = useState<any>({});
+     const [avatarFile, setAvatarFile] = useState<any>(null);
+     const updateTanksConfiguration = useUpdateTanksConfiguration();
+     const saveTanksConfiguration = useSaveTanksConfiguration();
+     const updateProfile = useUpdateUserProfile();
      const getRoles = useGetRoles();
 
      const toggleTab = (tabT: string) => {
@@ -107,6 +119,7 @@ export const Settings: React.FC = () => {
      const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>) => {
           const { name, value, files } = e.target;
           if (name === "image" && files) {
+               setAvatarFile(files[0]);
                const reader = new FileReader();
                reader.onload = () => {
                     if (reader.readyState === 2) {
@@ -143,9 +156,103 @@ export const Settings: React.FC = () => {
      const handleSubmit = (e: React.FormEvent) => {
           e.preventDefault();
           // Handle profile update logic here
-          console.log("Updated profile:", profile);
           if (activeTab === "polling") {
                localStorage.setItem("polling", JSON.stringify(polling));
+          }
+          if (activeTab === "profile") {
+               updateProfile(
+                    {
+                         userId: user?.userId,
+                         email: profile.email,
+                         image: "",
+                         username: profile.name,
+                    },
+                    setSettingsLoading,
+               );
+          }
+          if (activeTab === "tanks") {
+               if (Object.keys(updatedDetails).length !== 0) {
+                    const {
+                         color,
+                         temperature,
+                         number,
+                         fillMaxValue,
+                         title,
+                         fillValue,
+                         type,
+                         minimumTemperature,
+                         temperatureMsm,
+                         temperatureColor,
+                         threshold,
+                         batchNumber,
+                         id,
+                         usersId,
+                         locationId,
+                         formula,
+                    } = updatedDetails;
+                    setSettingsLoading(true);
+                    if (id !== 0) {
+                         updateTanksConfiguration(
+                              {
+                                   sysConfigIdx: id,
+                                   tankIdentifier: title,
+                                   tankName: title,
+                                   tankType: 0,
+                                   color,
+                                   pHSetting: 0,
+                                   tempSetting: Math.ceil(temperature as number) || 0,
+                                   tempThreshold: +minimumTemperature || 0,
+                                   temperatureColor: "string",
+                                   formula: formula || "string",
+                                   locationId,
+                                   currentFluidLevel: Math.ceil(fillValue),
+                                   maximumFluidLevel: fillMaxValue,
+                                   isTankOnline: true,
+                                   lastUpdatedBy: "string",
+                                   usersId: JSON.stringify(usersId),
+                                   location: "",
+                              },
+                              () => {
+                                   setSettingsLoading(false);
+                                   toast.success("You Successfully updated the tank Information");
+                              },
+                              () => {
+                                   setSettingsLoading(false);
+                                   toast.error("Something Went Wrong");
+                              },
+                         );
+                    } else {
+                         saveTanksConfiguration(
+                              {
+                                   sysConfigIdx: id,
+                                   tankIdentifier: title,
+                                   tankName: title,
+                                   tankType: 0,
+                                   color,
+                                   pHSetting: 0,
+                                   tempSetting: Math.ceil(temperature as number) || 0,
+                                   tempThreshold: +minimumTemperature || 0,
+                                   temperatureColor: "string",
+                                   formula: formula || "string",
+                                   locationId,
+                                   currentFluidLevel: Math.ceil(fillValue),
+                                   maximumFluidLevel: +fillMaxValue,
+                                   isTankOnline: true,
+                                   lastUpdatedBy: "string",
+                                   usersId: JSON.stringify(usersId),
+                                   location: "",
+                              },
+                              () => {
+                                   setSettingsLoading(false);
+                                   toast.success("You Successfully updated the tank Information");
+                              },
+                              () => {
+                                   setSettingsLoading(false);
+                                   toast.error("Something Went Wrong");
+                              },
+                         );
+                    }
+               }
           }
      };
 
@@ -156,22 +263,7 @@ export const Settings: React.FC = () => {
      const handleIdleScreenSubmit = (e: React.FormEvent) => {
           e.preventDefault();
           // Handle idle screen settings update logic here
-          // console.log("Updated idle screen settings:", idleScreenSettings);
      };
-
-     // const handleRoleCreate = (e: React.FormEvent) => {
-     //      e.preventDefault();
-     //      // Generate a unique ID for the new role
-     //      const newRoleId = roles.length > 0 ? roles[roles.length - 1].id + 1 : 1;
-     //      // Create a new role object
-     //      const newRole: Role = {
-     //           id: newRoleId,
-     //           name: "",
-     //      };
-     //      // Add the new role to the state
-     //      setRoles((prevState) => [...prevState, newRole]);
-     //      setTab(1);
-     // };
 
      const handleDisplay = () => {
           api.start({
@@ -186,7 +278,16 @@ export const Settings: React.FC = () => {
           });
      };
 
-     // console.log("selectedUser", selectedUser);
+     const handleSaveAvatar = async () => {
+          const formData = new FormData();
+          formData.append("file", avatarFile);
+          const response = await axios.post(
+               `${baseUrl}/api/Sys/uploadavatarimage/${user.userId}`,
+               formData,
+          );
+          console.log("file", response);
+     };
+
      return (
           <Container style={{ marginTop: 60 }}>
                <h1 className="mb-4">Settings</h1>
@@ -283,13 +384,16 @@ export const Settings: React.FC = () => {
                                                        />
                                                   </div>
                                              )}
-                                             <Input
-                                                  type="file"
-                                                  name="image"
-                                                  id="image"
-                                                  onChange={handleProfileChange}
-                                                  accept="image/*"
-                                             />
+                                             <div>
+                                                  <Input
+                                                       type="file"
+                                                       name="image"
+                                                       id="image"
+                                                       onChange={handleProfileChange}
+                                                       accept="image/*"
+                                                  />
+                                                  <Button onClick={handleSaveAvatar}>Save</Button>
+                                             </div>
                                         </FormGroup>
                                         <FormGroup>
                                              <Label for="name">Name</Label>
@@ -340,6 +444,8 @@ export const Settings: React.FC = () => {
                                         tanks={tanksStore}
                                         setActiveTank={setActiveTank}
                                         handleDisplay={handleDisplay}
+                                        setUpdatedDetails={setUpdatedDetails}
+                                        updatedDetails={updatedDetails}
                                    />
                               </Col>
                               <Col
@@ -466,7 +572,7 @@ export const Settings: React.FC = () => {
                               // type="submit"
                               onClick={handleSubmit}
                          >
-                              Save Settings
+                              {settingsLoading ? "Saving..." : "Save Settings"}
                          </Button>
                     </div>
                )}
