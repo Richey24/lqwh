@@ -38,7 +38,7 @@ export const useGetTanks = () => {
                                              return {
                                                   ...tank,
                                                   temperature: response.data[key],
-                                                  color: +names[1] === 809 ? "#DC3545" : "#038aff",
+                                                  color: "#038aff",
                                                   minimumTemperature: 10,
                                                   temperatureMsm: "celcius",
                                                   temperatureColor: "#DC3545",
@@ -65,6 +65,7 @@ export const useGetTanks = () => {
                                         batchNumber: response.data[key],
                                         id: 0,
                                         usersId: [],
+                                        fomula: "",
                                    });
                               } else if (names[2] === "Weight") {
                                    tanks.push({
@@ -78,6 +79,7 @@ export const useGetTanks = () => {
                                         batchNumber: 0,
                                         id: 0,
                                         usersId: [],
+                                        fomula: "",
                                    });
                               } else if (names[2] === "Temp") {
                                    tanks.push({
@@ -95,6 +97,7 @@ export const useGetTanks = () => {
                                         temperatureColor: "#DC3545",
                                         id: 0,
                                         usersId: [],
+                                        fomula: "",
                                    });
                               }
                          }
@@ -118,6 +121,7 @@ export const useGetTanks = () => {
                                                   ? JSON.parse(config?.usersId as string)
                                                   : [],
                                              fillMaxValue: config.maximumFluidLevel,
+                                             fomula: config.formula,
                                         };
                                    }
                                    return tank;

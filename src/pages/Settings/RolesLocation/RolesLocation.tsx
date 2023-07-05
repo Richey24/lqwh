@@ -274,6 +274,7 @@ export const RolesLocation: React.FC = () => {
                          id,
                          usersId,
                          locationId,
+                         fomula,
                     } = dropType.tank;
                     setLocationLoading(true);
                     updateTanksConfiguration(
@@ -285,9 +286,9 @@ export const RolesLocation: React.FC = () => {
                               color,
                               pHSetting: 0,
                               tempSetting: Math.ceil(temperature as number) || 0,
-                              tempThreshold: threshold,
+                              tempThreshold: minimumTemperature ?? 0,
                               temperatureColor: "string",
-                              formula: "string",
+                              formula: fomula ?? "string",
                               locationId: locationId as number,
                               currentFluidLevel: Math.ceil(fillValue),
                               maximumFluidLevel: fillMaxValue,
@@ -327,6 +328,7 @@ export const RolesLocation: React.FC = () => {
                          id,
                          locationId,
                          usersId,
+                         fomula,
                     } = dropType.tank;
                     setLocationLoading(true);
                     if (id !== 0) {
@@ -339,9 +341,9 @@ export const RolesLocation: React.FC = () => {
                                    color,
                                    pHSetting: 0,
                                    tempSetting: Math.ceil(temperature as number) || 0,
-                                   tempThreshold: threshold,
+                                   tempThreshold: minimumTemperature || 0,
                                    temperatureColor: "string",
-                                   formula: "string",
+                                   formula: fomula ?? "string",
                                    locationId: locationId as number,
                                    currentFluidLevel: Math.ceil(fillValue),
                                    maximumFluidLevel: fillMaxValue,
@@ -372,9 +374,9 @@ export const RolesLocation: React.FC = () => {
                                    color,
                                    pHSetting: 0,
                                    tempSetting: Math.ceil(temperature as number) || 0,
-                                   tempThreshold: threshold,
+                                   tempThreshold: minimumTemperature ?? 0,
                                    temperatureColor: "string",
-                                   formula: "string",
+                                   formula: fomula ?? "string",
                                    locationId: locationId as number,
                                    currentFluidLevel: Math.ceil(fillValue),
                                    maximumFluidLevel: fillMaxValue,

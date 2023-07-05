@@ -35,6 +35,10 @@ export const DefaultLayout = () => {
           setShowdropdown((prev) => !prev);
      };
 
+     const handleBatchSearch = () => {
+          navigate("/batch-view");
+     };
+
      const handleRefresh = () => {
           // setTanksStore(getTanks());
      };
@@ -81,7 +85,7 @@ export const DefaultLayout = () => {
                                    </li>
                               </ul>
 
-                              <div className="search-animated toggle-search">
+                              <div className="search-animated toggle-search mr-1">
                                    <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
@@ -132,8 +136,10 @@ export const DefaultLayout = () => {
                                         Refresh
                                    </span>
                               </div>
-                              <div className="search-animated toggle-search ml-5"></div>
-                              <div className="search-animated toggle-search ml-5">
+                              <div
+                                   className="search-animated toggle-search"
+                                   style={{ marginLeft: 10 }}
+                              >
                                    <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
@@ -176,6 +182,13 @@ export const DefaultLayout = () => {
                                              </svg>
                                         </div>
                                    </form>
+                                   <span
+                                        className="badge badge-primary"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={handleBatchSearch}
+                                   >
+                                        Check
+                                   </span>
                               </div>
 
                               <ul className="navbar-item flex-row ms-lg-auto ms-0 action-area">
