@@ -3,6 +3,8 @@ import { Container, Table, FormGroup, Label, Input } from "reactstrap";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { random } from "lodash";
+import ToggleButton from "../../components/ToggleButton/ToggleButton";
+import DateRangePicker from "./DateRange/DateRange";
 
 const generateCoolColor = (level: number, temperature: number, opacity: number): string => {
      const levelRange = [0, 100]; // Example level range
@@ -29,6 +31,7 @@ interface TankHistory {
 const BatchHistory: React.FC = () => {
      const [selectedBatches, setSelectedBatches] = useState<number[]>([]);
      const [tankHistory, setTankHistory] = useState<TankHistory[]>([]);
+     const [active, setActive] = useState("weight");
 
      useEffect(() => {
           const generateDummyData = () => {
@@ -160,73 +163,179 @@ const BatchHistory: React.FC = () => {
                <h1>Tank History</h1>
                <div
                     style={{
-                         marginTop: "20px",
-                         borderRadius: 8,
-                         marginBottom: 50,
                          display: "flex",
-                         alignItems: "center",
-                         justifyContent: "center",
-                         border: "2px solid #ebebeb",
+                         alignItems: "flex-end",
+                         justifyContent: "flex-end",
+                         flexDirection: "column",
+                         width: "100%",
                     }}
                >
+                    <DateRangePicker />
                     <div
                          style={{
                               marginTop: "20px",
-
-                              padding: 16,
                               borderRadius: 8,
-                              marginBottom: 16,
-                              width: "50%",
+                              marginBottom: 50,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              border: "2px solid #ebebeb",
+                              width: "100%",
                          }}
                     >
-                         <Line data={chartData} options={graphOptions} height={400} />
-                    </div>{" "}
-                    <div
-                         style={{
-                              marginTop: "20px",
-
-                              padding: 16,
-                              borderRadius: 8,
-                              marginBottom: 16,
-
-                              width: "50%",
-                         }}
-                    >
-                         {" "}
-                         <Line
-                              data={chartData}
-                              options={graphTemperatureOptions}
-                              height={400}
-                              //   width={"100%"}
-                         />
-                    </div>
-               </div>
-
-               <FormGroup style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                    {[...new Set(tankHistory.map((histoy) => histoy.batchId))].map(
-                         (batchId, index) => (
-                              <Label
-                                   key={index}
+                         {active === "weight" && (
+                              <div
                                    style={{
-                                        border: "1px solid rgb(162 158 158)",
-                                        padding: 2,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        gap: 4,
+                                        marginTop: "20px",
+
+                                        padding: 16,
                                         borderRadius: 8,
+                                        marginBottom: 16,
+                                        width: "100%",
                                    }}
                               >
-                                   <Input
-                                        type="checkbox"
-                                        checked={selectedBatches.includes(batchId)}
-                                        onChange={() => toggleBatchSelection(batchId)}
-                                   />{" "}
-                                   <span>Batch {batchId}</span>
-                              </Label>
-                         ),
-                    )}
-               </FormGroup>
+                                   <Line data={chartData} options={graphOptions} height={400} />
+                              </div>
+                         )}{" "}
+                         {active === "temp" && (
+                              <div
+                                   style={{
+                                        marginTop: "20px",
+
+                                        padding: 16,
+                                        borderRadius: 8,
+                                        marginBottom: 16,
+
+                                        width: "100%",
+                                   }}
+                              >
+                                   {" "}
+                                   <Line
+                                        data={chartData}
+                                        options={graphTemperatureOptions}
+                                        height={400}
+                                        //   width={"100%"}
+                                   />
+                              </div>
+                         )}
+                         <ToggleButton active={active} setActive={setActive} />
+                    </div>
+               </div>
+               <div
+                    style={{
+                         display: "flex",
+                         alignItems: "flex-start",
+                         justifyContent: "flex-start",
+                         gap: 30,
+                    }}
+               >
+                    <FormGroup
+                         style={{
+                              display: "flex",
+                              gap: 8,
+                              flexWrap: "wrap",
+                              maxWidth: 500,
+                              border: "1px solid rgb(162 158 158)",
+                              padding: 8,
+                              borderRadius: 8,
+                         }}
+                    >
+                         <p style={{ width: "100%" }}>Storage</p>
+                         {[...new Set(tankHistory.map((histoy) => histoy.batchId))]
+                              .filter((t, idx) => idx < 8)
+                              .map((batchId, index) => (
+                                   <Label
+                                        key={index}
+                                        style={{
+                                             border: "1px solid rgb(162 158 158)",
+                                             padding: 2,
+                                             display: "flex",
+                                             alignItems: "center",
+                                             justifyContent: "center",
+                                             gap: 4,
+                                             borderRadius: 8,
+                                        }}
+                                   >
+                                        <Input
+                                             type="checkbox"
+                                             checked={selectedBatches.includes(batchId)}
+                                             onChange={() => toggleBatchSelection(batchId)}
+                                        />{" "}
+                                        <span>Batch {batchId}</span>
+                                   </Label>
+                              ))}
+                    </FormGroup>
+                    <FormGroup
+                         style={{
+                              display: "flex",
+                              gap: 8,
+                              flexWrap: "wrap",
+                              border: "1px solid rgb(162 158 158)",
+                              padding: 8,
+                              borderRadius: 8,
+                         }}
+                    >
+                         <p style={{ width: "100%" }}>PreMixing</p>
+                         {[...new Set(tankHistory.map((histoy) => histoy.batchId))]
+                              .filter((t, idx) => idx > 8 && idx < 13)
+                              .map((batchId, index) => (
+                                   <Label
+                                        key={index}
+                                        style={{
+                                             border: "1px solid rgb(162 158 158)",
+                                             padding: 2,
+                                             display: "flex",
+                                             alignItems: "center",
+                                             justifyContent: "center",
+                                             gap: 4,
+                                             borderRadius: 8,
+                                        }}
+                                   >
+                                        <Input
+                                             type="checkbox"
+                                             checked={selectedBatches.includes(batchId)}
+                                             onChange={() => toggleBatchSelection(batchId)}
+                                        />{" "}
+                                        <span>T {batchId}</span>
+                                   </Label>
+                              ))}
+                    </FormGroup>
+                    <FormGroup
+                         style={{
+                              display: "flex",
+                              gap: 8,
+                              flexWrap: "wrap",
+                              border: "1px solid rgb(162 158 158)",
+                              padding: 8,
+                              borderRadius: 8,
+                         }}
+                    >
+                         <p style={{ width: "100%" }}>Mixing</p>
+                         {[...new Set(tankHistory.map((histoy) => histoy.batchId))]
+                              .filter((t, idx) => idx > 12 && idx < 15)
+                              .map((batchId, index) => (
+                                   <Label
+                                        key={index}
+                                        style={{
+                                             border: "1px solid rgb(162 158 158)",
+                                             padding: 2,
+                                             display: "flex",
+                                             alignItems: "center",
+                                             justifyContent: "center",
+                                             gap: 4,
+                                             borderRadius: 8,
+                                        }}
+                                   >
+                                        <Input
+                                             type="checkbox"
+                                             checked={selectedBatches.includes(batchId)}
+                                             onChange={() => toggleBatchSelection(batchId)}
+                                        />{" "}
+                                        <span>Batch {batchId}</span>
+                                   </Label>
+                              ))}
+                    </FormGroup>
+               </div>
           </Container>
      );
 };
