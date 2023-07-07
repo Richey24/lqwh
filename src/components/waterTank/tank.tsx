@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 //@ts-no-shadow
-import { useEffect, FC, useRef } from "react";
+import { useEffect, FC, useRef, useContext } from "react";
 import $ from "jquery";
 import image from "../../assets/img/image.png";
 import classes from "./styles.module.css";
 import { TankProps } from "../../pages/Dashboard/types";
 import { AiFillWarning } from "react-icons/ai";
+import { AppContext } from "../../pages/appState";
 
 const Tank: FC<TankProps> = ({
      color,
@@ -23,6 +24,9 @@ const Tank: FC<TankProps> = ({
 }) => {
      const containerRef = useRef(null);
      const tankRef = useRef<any>(null);
+     const { toggleBatchViewModal } = useContext<{
+          toggleBatchViewModal: () => void;
+     }>(AppContext);
 
      const classN = `${title}-${Math.random()}-${fillMaxValue}`.replace(" ", "_").replace(".", "_");
 
@@ -2096,7 +2100,7 @@ const Tank: FC<TankProps> = ({
                               />
                          </div>
                     </div>
-                    <button className="btn btn-default">
+                    <button className="btn btn-default" onClick={toggleBatchViewModal}>
                          <img src={image} height={20} width={20} />
                     </button>
                </div>
