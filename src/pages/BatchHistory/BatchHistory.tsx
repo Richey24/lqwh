@@ -159,7 +159,7 @@ const BatchHistory: React.FC = () => {
      };
 
      return (
-          <Container>
+          <Container style={{ marginTop: 70 }}>
                <h1>Tank History</h1>
                <div
                     style={{
@@ -181,6 +181,7 @@ const BatchHistory: React.FC = () => {
                               justifyContent: "center",
                               border: "2px solid #ebebeb",
                               width: "100%",
+                              background: "#fff",
                          }}
                     >
                          {active === "weight" && (
@@ -238,6 +239,7 @@ const BatchHistory: React.FC = () => {
                               border: "1px solid rgb(162 158 158)",
                               padding: 8,
                               borderRadius: 8,
+                              background: "#fff",
                          }}
                     >
                          <p style={{ width: "100%" }}>Storage</p>
@@ -273,6 +275,7 @@ const BatchHistory: React.FC = () => {
                               border: "1px solid rgb(162 158 158)",
                               padding: 8,
                               borderRadius: 8,
+                              background: "#fff",
                          }}
                     >
                          <p style={{ width: "100%" }}>PreMixing</p>
@@ -308,6 +311,7 @@ const BatchHistory: React.FC = () => {
                               border: "1px solid rgb(162 158 158)",
                               padding: 8,
                               borderRadius: 8,
+                              background: "#fff",
                          }}
                     >
                          <p style={{ width: "100%" }}>Mixing</p>

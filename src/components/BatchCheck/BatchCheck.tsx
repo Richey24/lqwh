@@ -14,7 +14,6 @@ const BatchView = ({ open, toggleModal }) => {
      const navigate = useNavigate();
 
      const handleTankHistory = () => {
-          // Logic to handle tank history
           navigate("/batch-history");
           toggleModal();
      };

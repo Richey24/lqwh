@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLogin } from "./hooks";
 import { Spinner } from "reactstrap";
 import { toast } from "react-toastify";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 interface FormState {
      email: string;
@@ -14,7 +15,6 @@ interface FormState {
 }
 
 export const Login = () => {
-     const navigate = useNavigate();
      const login = useLogin();
 
      // State object containing email and password
@@ -30,6 +30,11 @@ export const Login = () => {
      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
      // Destructure values from formState for easier access
      const { email, password, emailError, passwordError, loading } = formState;
+     const [passwordVisible, setPasswordVisible] = useState(false);
+
+     const togglePasswordVisibility = () => {
+          setPasswordVisible(!passwordVisible);
+     };
 
      const handleSubmit = async (e: FormEvent) => {
           e.preventDefault();
@@ -148,17 +153,57 @@ export const Login = () => {
                                                             <label className="form-label">
                                                                  Password
                                                             </label>
-                                                            <input
-                                                                 type="password"
-                                                                 className="form-control"
-                                                                 name="password"
-                                                                 value={
-                                                                      formState[
-                                                                           "password"
-                                                                      ] as string
-                                                                 }
-                                                                 onChange={handleInputChange}
-                                                            />
+                                                            <div
+                                                                 style={{
+                                                                      position: "relative",
+                                                                      display: "flex",
+                                                                      alignItems: "center",
+                                                                      justifyContent: "center",
+                                                                 }}
+                                                            >
+                                                                 <input
+                                                                      type={
+                                                                           passwordVisible
+                                                                                ? "text"
+                                                                                : "password"
+                                                                      }
+                                                                      className="form-control"
+                                                                      name="password"
+                                                                      value={
+                                                                           formState[
+                                                                                "password"
+                                                                           ] as string
+                                                                      }
+                                                                      onChange={handleInputChange}
+                                                                 />
+                                                                 <button
+                                                                      type="button"
+                                                                      className="password-toggle-button"
+                                                                      onClick={
+                                                                           togglePasswordVisibility
+                                                                      }
+                                                                      style={{
+                                                                           background: "none",
+                                                                           border: "none",
+                                                                           cursor: "pointer",
+                                                                           outline: "none",
+                                                                           position: "absolute",
+                                                                           right: 0,
+                                                                           marginRight: 10,
+                                                                      }}
+                                                                 >
+                                                                      {passwordVisible ? (
+                                                                           <MdVisibilityOff
+                                                                                size={20}
+                                                                           />
+                                                                      ) : (
+                                                                           <MdVisibility
+                                                                                size={20}
+                                                                           />
+                                                                      )}
+                                                                 </button>
+                                                            </div>
+
                                                             <div
                                                                  style={{
                                                                       color: "red",

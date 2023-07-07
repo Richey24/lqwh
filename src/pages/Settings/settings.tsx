@@ -309,7 +309,7 @@ export const Settings: React.FC = () => {
      };
 
      return (
-          <Container style={{ marginTop: 60 }}>
+          <Container style={{ marginTop: 70 }}>
                <h1 className="mb-4">Settings</h1>
                <Nav tabs>
                     <NavItem>

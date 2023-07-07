@@ -5,6 +5,7 @@ import { AppContext } from "../pages/appState";
 import { TankProps } from "../pages/Dashboard/types";
 import { useGetTanks, useGetTanksConfig } from "../pages/Dashboard/hooks";
 import ClickAwayListener from "react-click-away-listener";
+import { Button } from "reactstrap";
 
 const refreshTime = +JSON.parse(localStorage.getItem("polling") as any)?.time * 10000 || 10000;
 export const DefaultLayout = () => {
@@ -46,7 +47,10 @@ export const DefaultLayout = () => {
 
      return (
           <>
-               <div className="header-container">
+               <div
+                    className="header-container"
+                    style={{ background: "#fff", borderRadius: 50, marginTop: 8 }}
+               >
                     <ClickAwayListener onClickAway={() => setShowdropdown(false)}>
                          <header className="header navbar navbar-expand-sm expand-header">
                               <a
@@ -191,7 +195,20 @@ export const DefaultLayout = () => {
                                         Check
                                    </span>
                               </div>
-
+                              {location.pathname !== "/batch-history" && (
+                                   <div
+                                        className="search-animated toggle-search"
+                                        style={{ marginLeft: 10 }}
+                                   >
+                                        <Button
+                                             className="d-flex align-items-center justify-content-center"
+                                             style={{ height: 35 }}
+                                             onClick={() => navigate("/batch-history")}
+                                        >
+                                             Open History
+                                        </Button>
+                                   </div>
+                              )}
                               <ul className="navbar-item flex-row ms-lg-auto ms-0 action-area">
                                    <li className="nav-item dropdown language-dropdown">
                                         <a
