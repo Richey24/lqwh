@@ -7,7 +7,8 @@ import { useGetTanks, useGetTanksConfig } from "../pages/Dashboard/hooks";
 import ClickAwayListener from "react-click-away-listener";
 import { Button } from "reactstrap";
 
-const refreshTime = +JSON.parse(localStorage.getItem("polling") as any)?.time * 10000 || 10000;
+const refreshTime =
+     (+JSON.parse(localStorage.getItem("polling") as any)?.time ?? 1 * 10000) || 10000;
 export const DefaultLayout = () => {
      const [showDropdown, setShowdropdown] = useState(false);
      const { user, setOpen, toggleBatchViewModal } = useContext<{
@@ -22,10 +23,9 @@ export const DefaultLayout = () => {
      const navigate = useNavigate();
 
      useEffect(() => {
-          // getTanks();
           getTanksConfig();
           const refreshTanks = setInterval(() => {
-               // getTanks();
+               getTanksConfig();
           }, refreshTime);
 
           return () => {

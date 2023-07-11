@@ -36,6 +36,7 @@
      border-radius: 4px;
      margin-top: 4px;
      color: #fff;
+     animation: flashingAnimation 0.5s infinite alternate;
 }
 
 .tempText {
@@ -47,4 +48,16 @@
 }
 .tempText > span {
      text-transform: uppercase;
+}
+
+.flashing {
+}
+
+@keyframes flashingAnimation {
+     from {
+          opacity: 1;
+     }
+     to {
+          opacity: 0;
+     }
 }

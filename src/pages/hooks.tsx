@@ -27,3 +27,45 @@ export const useGetMe = () => {
           }
      };
 };
+
+export const useUnlockScreen = () => {
+     return async (
+          payload: { email: string; password: string },
+          onSuccess: () => void,
+          onError: () => void,
+     ) => {
+          try {
+               const response = await axios.post(`${baseUrl}/api/Login/unlockscreen`, payload, {
+                    headers: {
+                         Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+               });
+               if (response.status === 200 || response.status === 201) {
+                    onSuccess();
+               }
+          } catch (err) {
+               toast.error("Something Went Wrong, Pls Try to Relogin");
+               onError();
+               console.log(err);
+          }
+     };
+};
+
+export const useLockScreen = () => {
+     return async (email: string, onSuccess: () => void, onError: () => void) => {
+          try {
+               const response = await axios.post(`${baseUrl}/api/Login/lockscreen/${email}`, {
+                    headers: {
+                         Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+               });
+               if (response.status === 200 || response.status === 201) {
+                    onSuccess();
+               }
+          } catch (err) {
+               toast.error("Something Went Wrong, Pls Try to Relogin");
+               onError();
+               console.log(err);
+          }
+     };
+};
