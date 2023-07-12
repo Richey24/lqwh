@@ -41,7 +41,7 @@ export const useGetTanks = () => {
                                                   color: "#038aff",
                                                   minimumTemperature: 10,
                                                   temperatureMsm: "celcius",
-                                                  temperatureColor: "#DC3545",
+                                                  temperatureColor: "#a71c1b",
                                                   type: +names[1] === 809 ? "HotWater" : "mix",
                                                   title: `T${names[1]}`,
                                              };

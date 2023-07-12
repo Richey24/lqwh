@@ -2,10 +2,20 @@ import { useContext, useState } from "react";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { AppContext } from "../appState";
 
-export function Lockscreen() {
-     const { open, setOpen } = useContext(AppContext);
+export function Lockscreen({
+     onClick,
+}: {
+     onClick: (
+          payload: { email: string; password: string },
+          onSuccess: () => void,
+          onError: () => void,
+     ) => void;
+}) {
+     const { open, setOpen, user } = useContext(AppContext);
      const [backdrop] = useState(true);
      const [keyboard] = useState(true);
+     const [loading, setLoading] = useState(false);
+     const [password, setPassword] = useState<string | null>();
 
      return (
           <Modal
@@ -52,16 +62,42 @@ export function Lockscreen() {
                               <div className="col-12">
                                    <div className="mb-4">
                                         <label className="form-label">Password</label>
-                                        <input type="text" className="form-control" />
+                                        <input
+                                             type="password"
+                                             value={password as string}
+                                             onChange={(event) =>
+                                                  setPassword(event.target.value as string)
+                                             }
+                                             className="form-control"
+                                             placeholder="Pass******"
+                                        />
                                    </div>
                               </div>
                               <div className="col-12">
                                    <div className="mb-4">
                                         <Button
                                              className="btn btn-secondary w-100"
-                                             onClick={() => setOpen(false)}
+                                             onClick={() => {
+                                                  if (password) {
+                                                       setLoading(true);
+                                                       onClick(
+                                                            {
+                                                                 email: user.email as string,
+                                                                 password,
+                                                            },
+                                                            () => {
+                                                                 setLoading(false);
+                                                                 setOpen(false);
+                                                                 setPassword("");
+                                                            },
+                                                            () => {
+                                                                 setLoading(false);
+                                                            },
+                                                       );
+                                                  }
+                                             }}
                                         >
-                                             UNLOCK
+                                             {loading ? "LOADING...." : "UNLOCK"}
                                         </Button>
                                    </div>
                               </div>

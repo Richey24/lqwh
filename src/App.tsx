@@ -35,7 +35,7 @@ function App() {
                          <Route path="batch-history" element={<BatchHistory />} />
                     </Route>
                     <Route path="/auth" element={<Auth />}>
-                         <Route path="lockscreen" element={<Lockscreen />} />
+                         {/* <Route path="lockscreen" element={<Lockscreen />} /> */}
                          <Route path="login" element={<Login />} />
                          <Route path="Register" element={<Register />} />
                     </Route>
