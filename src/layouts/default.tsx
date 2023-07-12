@@ -6,6 +6,27 @@ import { TankProps } from "../pages/Dashboard/types";
 import { useGetTanks, useGetTanksConfig } from "../pages/Dashboard/hooks";
 import ClickAwayListener from "react-click-away-listener";
 import { Button } from "reactstrap";
+import { IoIosArrowBack } from "react-icons/io";
+
+const BackButton = ({ onClick }) => {
+     return (
+          <Button
+               color="secondary"
+               className={classes.backButton}
+               style={{
+                    marginRight: 16,
+                    height: 35,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+               }}
+               onClick={onClick}
+          >
+               <IoIosArrowBack className="back-icon" />
+               Go Back
+          </Button>
+     );
+};
 
 const refreshTime =
      (+JSON.parse(localStorage.getItem("polling") as any)?.time ?? 1 * 10000) || 10000;
@@ -48,7 +69,7 @@ export const DefaultLayout = () => {
      return (
           <>
                <div
-                    className="header-container"
+                    className={`header-container ${classes.header}`}
                     style={{ background: "#fff", borderRadius: 50, marginTop: 8 }}
                >
                     <ClickAwayListener onClickAway={() => setShowdropdown(false)}>
@@ -75,20 +96,24 @@ export const DefaultLayout = () => {
                                         <line x1="3" y1="18" x2="21" y2="18"></line>
                                    </svg>
                               </a>
-
-                              <ul
-                                   className="navbar-item theme-brand flex-row  text-center"
-                                   onClick={() => navigate("/")}
-                              >
-                                   <li className="nav-item theme-logo">
-                                        <a href="index.html">
-                                             {/* <img src="../src/assets/img/logo2.svg" className="navbar-logo" alt="logo"> */}
-                                        </a>
-                                   </li>
-                                   <li className="nav-item theme-text">
-                                        <p className="nav-link"> Last Update </p>
-                                   </li>
-                              </ul>
+                              {location.pathname !== "/" && (
+                                   <BackButton onClick={() => navigate("/")} />
+                              )}
+                              {location.pathname === "/" && (
+                                   <ul
+                                        className="navbar-item theme-brand flex-row  text-center"
+                                        onClick={() => navigate("/")}
+                                   >
+                                        <li className="nav-item theme-logo">
+                                             <a href="index.html">
+                                                  {/* <img src="../src/assets/img/logo2.svg" className="navbar-logo" alt="logo"> */}
+                                             </a>
+                                        </li>
+                                        <li className="nav-item theme-text">
+                                             <p className="nav-link"> Last Update </p>
+                                        </li>
+                                   </ul>
+                              )}
 
                               <div className="search-animated toggle-search mr-1">
                                    <svg

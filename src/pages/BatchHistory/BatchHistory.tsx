@@ -5,6 +5,8 @@ import "chart.js/auto";
 import { random } from "lodash";
 import ToggleButton from "../../components/ToggleButton/ToggleButton";
 import DateRangePicker from "./DateRange/DateRange";
+import { useGetHistory } from "./hooks";
+
 
 const generateCoolColor = (level: number, temperature: number, opacity: number): string => {
      const levelRange = [0, 100]; // Example level range
@@ -32,8 +34,10 @@ const BatchHistory: React.FC = () => {
      const [selectedBatches, setSelectedBatches] = useState<number[]>([]);
      const [tankHistory, setTankHistory] = useState<TankHistory[]>([]);
      const [active, setActive] = useState("weight");
+     const getHistory = useGetHistory();
 
      useEffect(() => {
+          getHistory();
           const generateDummyData = () => {
                const currentDate = new Date();
 
